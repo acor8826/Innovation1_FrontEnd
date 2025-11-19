@@ -1,124 +1,46 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
-import { Sidebar } from './components/layout/Sidebar';
-import { Header } from './components/layout/Header';
-import { Dashboard } from './pages/Dashboard';
-import { Projects } from './pages/Projects';
-import { ProjectDetail } from './pages/ProjectDetail';
-import { PlaceholderPage } from './pages/PlaceholderPage';
-import { Innovation1Landing } from './pages/Innovation1Landing';
-import { Innovation1Login } from './pages/Innovation1Login';
+import './styles/globals.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Innovation1Landing from './pages/Innovation1Landing';
+import Innovation1Login from './pages/Innovation1Login';
+import Dashboard from './pages/Dashboard';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { Toaster } from 'sonner@2.0.3';
 
 export default function App() {
   return (
-    <HashRouter>
+    <Router>
+      <Toaster position="top-right" />
       <Routes>
-        {/* Innovation1 Landing - Homepage */}
         <Route path="/" element={<Innovation1Landing />} />
         <Route path="/login" element={<Innovation1Login />} />
-
-        {/* Dashboard Routes */}
         <Route
-          path="/*"
+          path="/dashboard"
           element={
-            <div className="min-h-screen bg-gray-50">
-              <Sidebar />
-              <div className="ml-64">
-                <Routes>
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <>
-                        <Header title="Dashboard" />
-                        <main className="p-8">
-                          <Dashboard />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/projects"
-                    element={
-                      <>
-                        <Header title="Projects" />
-                        <main className="p-8">
-                          <Projects />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/projects/:id"
-                    element={
-                      <>
-                        <Header title="Project Details" />
-                        <main className="p-8">
-                          <ProjectDetail />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/tasks"
-                    element={
-                      <>
-                        <Header title="Tasks" />
-                        <main className="p-8">
-                          <PlaceholderPage
-                            title="Tasks"
-                            description="Task management coming soon"
-                          />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/team"
-                    element={
-                      <>
-                        <Header title="Team" />
-                        <main className="p-8">
-                          <PlaceholderPage
-                            title="Team"
-                            description="Team management coming soon"
-                          />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/activity"
-                    element={
-                      <>
-                        <Header title="Activity" />
-                        <main className="p-8">
-                          <PlaceholderPage
-                            title="Activity"
-                            description="Activity feed coming soon"
-                          />
-                        </main>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <>
-                        <Header title="Settings" />
-                        <main className="p-8">
-                          <PlaceholderPage
-                            title="Settings"
-                            description="Settings coming soon"
-                          />
-                        </main>
-                      </>
-                    }
-                  />
-                </Routes>
-              </div>
-            </div>
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
           }
         />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <Projects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <ProjectDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </HashRouter>
+    </Router>
   );
 }

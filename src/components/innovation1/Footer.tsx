@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Sparkles, Twitter, Linkedin, Github, Mail } from 'lucide-react';
+import { Twitter, Linkedin, Github, Mail } from 'lucide-react';
+import { Innovation1Logo } from './Innovation1Logo';
 
 export function Footer() {
   return (
@@ -13,11 +14,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] rounded-xl flex items-center justify-center shadow-lg shadow-[#2D9CDB]/30">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl text-[#EEF8FF]">Innovation1</span>
+            <div className="mb-6">
+              <Innovation1Logo size="md" animated={true} showText={true} />
             </div>
             <p className="text-[#A6E1FF]/70 leading-relaxed">
               Building tomorrow's systems with AI-driven development and agentic automation.

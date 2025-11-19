@@ -1,307 +1,556 @@
-import { ArrowRight, Bot, Zap, Network, FileText, Workflow, Cpu, Sparkles as SparklesIcon, Brain, Rocket } from 'lucide-react';
-import { StickyNav } from '../components/innovation1/StickyNav';
-import { Footer } from '../components/innovation1/Footer';
-import { GlassmorphCard } from '../components/innovation1/GlassmorphCard';
-import { HorizontalTimeline } from '../components/innovation1/HorizontalTimeline';
-import { ShowcaseCard } from '../components/innovation1/ShowcaseCard';
-import { CosmicButton } from '../components/innovation1/CosmicButton';
-import { CosmicBackground } from '../components/innovation1/CosmicBackground';
-import { NeuralLattice } from '../components/innovation1/NeuralLattice';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import {
+  Menu,
+  X,
+  ArrowRight,
+  Sparkles,
+  ChevronDown,
+  Zap,
+  Brain,
+  Network,
+  Cpu,
+  Blocks,
+  GitBranch,
+  Rocket,
+  Shield,
+} from 'lucide-react';
+import { SEO } from '../components/SEO';
+import { ParticleField } from '../components/innovation1/ParticleField';
 import { AgentCore } from '../components/innovation1/AgentCore';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { NeuralGrid } from '../components/innovation1/NeuralGrid';
+import { GlassCard } from '../components/innovation1/GlassCard';
+import { TimelineStep } from '../components/innovation1/TimelineStep';
+import { ShowcaseProject } from '../components/innovation1/ShowcaseProject';
 
-export function Innovation1Landing() {
-  const timelineSteps = [
-    {
-      number: 1,
-      title: 'Discovery',
-      description: 'We dive deep into your business needs, technical requirements, and automation opportunities.',
-    },
-    {
-      number: 2,
-      title: 'System Design',
-      description: 'Our architects design scalable, maintainable systems with clear integration points.',
-    },
-    {
-      number: 3,
-      title: 'Agent Training',
-      description: 'We develop and train AI agents on your specific use cases for optimal performance.',
-    },
-    {
-      number: 4,
-      title: 'Deployment',
-      description: 'Smooth rollout with monitoring, testing, and continuous optimization.',
-    },
-  ];
+export default function Innovation1Landing() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#020817] overflow-x-hidden">
-      <StickyNav />
+      <SEO
+        title="Innovation1 Web Design & Development | AI-Powered Digital Architecture"
+        description="Building tomorrow's systems today. Expert AI-powered development, agentic automation, and intelligent digital architecture for next-generation software."
+        keywords="AI development, agentic automation, digital architecture, AI systems, automation, Innovation1"
+      />
 
-      {/* SECTION 1: CINEMATIC 3D HERO SECTION */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Cosmic Background */}
-        <CosmicBackground />
-
-        {/* Neural Lattice */}
-        <NeuralLattice />
-
-        {/* Orbiting Agent Cores */}
-        <AgentCore position="top-left" icon="brain" delay={0} />
-        <AgentCore position="top-right" icon="cpu" delay={1} />
-        <AgentCore position="bottom-left" icon="network" delay={2} />
-        <AgentCore position="bottom-right" icon="sparkles" delay={3} />
-
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8 py-32 pt-40 z-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-            {/* Left Column - Content */}
-            <div className="space-y-8">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-xl border border-[#2D9CDB]/30 rounded-full px-6 py-3 shadow-xl shadow-[#2D9CDB]/10">
-                <div className="w-2 h-2 bg-[#4ADE80] rounded-full animate-pulse"></div>
-                <span className="text-[#A6E1FF]">AI-Powered Development Platform</span>
-              </div>
-
-              {/* Headline with Volumetric Glow */}
+      {/* Navigation */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-[#0D1B4C]/95 backdrop-blur-xl shadow-lg border-b border-[#2D9CDB]/20'
+            : 'bg-transparent'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2 group">
               <div className="relative">
-                <div className="absolute -inset-8 bg-gradient-to-r from-[#2D9CDB]/30 via-[#C084F5]/40 to-[#A6E1FF]/30 blur-[80px] animate-pulse-glow"></div>
-                <h1 className="relative text-white leading-tight text-5xl lg:text-6xl xl:text-7xl">
-                  Building Tomorrow's
-                  <span className="block bg-gradient-to-r from-[#A6E1FF] via-[#C084F5] to-[#2D9CDB] bg-clip-text text-transparent mt-2">
-                    Systems Today
-                  </span>
-                </h1>
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2D9CDB] to-[#C084F5] blur-md opacity-75 rounded-lg" />
+                <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-[#2D9CDB] to-[#A6E1FF] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
               </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-[#A6E1FF] to-[#EEF8FF] bg-clip-text text-transparent">
+                Innovation1
+              </span>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-8">
+              <a href="#features" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
+                Features
+              </a>
+              <a href="#process" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
+                Process
+              </a>
+              <a href="#showcase" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
+                Showcase
+              </a>
+              <Link
+                to="/login"
+                className="relative group px-6 py-2.5 overflow-hidden rounded-lg"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] opacity-100 group-hover:opacity-90 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#A6E1FF] to-[#C084F5] opacity-0 group-hover:opacity-100 blur transition-opacity" />
+                <span className="relative text-white font-medium">Staff Login</span>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors text-[#A6E1FF]"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-[#0D1B4C]/95 backdrop-blur-xl border-t border-[#2D9CDB]/20"
+          >
+            <div className="px-4 py-6 space-y-4">
+              <a
+                href="#features"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
+              >
+                Features
+              </a>
+              <a
+                href="#process"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
+              >
+                Process
+              </a>
+              <a
+                href="#showcase"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
+              >
+                Showcase
+              </a>
+              <Link
+                to="/login"
+                className="block w-full px-6 py-3 bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] text-white text-center rounded-lg hover:shadow-lg transition-all"
+              >
+                Staff Login
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </nav>
+
+      {/* Cinematic 3D Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Cosmic Background Layers */}
+        <div className="absolute inset-0">
+          {/* Deep space gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0D1B4C] via-[#020817] to-[#0D1B4C]" />
+          
+          {/* Nebula clouds */}
+          <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#2D9CDB] rounded-full blur-[200px] opacity-20 animate-pulse" />
+          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#C084F5] rounded-full blur-[180px] opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
+          
+          {/* Neural grid overlay */}
+          <NeuralGrid />
+          
+          {/* Particle field */}
+          <ParticleField />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-20">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left Column - Text Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left"
+            >
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-[#2D9CDB]/30 mb-6"
+              >
+                <Sparkles className="w-4 h-4 text-[#A6E1FF]" />
+                <span className="text-sm font-medium text-[#A6E1FF]">
+                  Next-Gen AI Architecture
+                </span>
+              </motion.div>
+
+              {/* Main Headline */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+                <span className="text-[#EEF8FF]">Building Tomorrow's</span>
+                <br />
+                <span className="bg-gradient-to-r from-[#2D9CDB] via-[#A6E1FF] to-[#C084F5] bg-clip-text text-transparent">
+                  Systems Today
+                </span>
+              </h1>
 
               {/* Subheadline */}
-              <p className="text-[#A6E1FF] text-xl lg:text-2xl leading-relaxed max-w-xl">
+              <p className="text-lg sm:text-xl text-[#A6E1FF]/80 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 AI-powered development, agentic automation, and intelligent digital architecture for the next generation of software.
               </p>
 
               {/* CTAs */}
-              <div className="flex items-center gap-4 flex-wrap pt-6">
-                <CosmicButton variant="primary" icon={ArrowRight} size="lg">
-                  Start a Project
-                </CosmicButton>
-                <CosmicButton variant="secondary" icon={SparklesIcon} size="lg">
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
+                <motion.a
+                  href="#features"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative group w-full sm:w-auto px-8 py-4 overflow-hidden rounded-xl"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF]" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#A6E1FF] to-[#C084F5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <span className="relative flex items-center justify-center gap-2 text-white font-semibold">
+                    Start a Project
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </motion.a>
+
+                <motion.a
+                  href="#showcase"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-full sm:w-auto px-8 py-4 bg-white/5 backdrop-blur-sm border border-[#2D9CDB]/30 text-[#EEF8FF] rounded-xl hover:bg-white/10 transition-all font-semibold"
+                >
                   Explore AI Solutions
-                </CosmicButton>
+                </motion.a>
               </div>
 
               {/* Metrics Row */}
-              <div className="grid grid-cols-3 gap-8 pt-12 border-t border-[#2D9CDB]/20">
-                <div className="space-y-2">
-                  <div className="text-4xl text-white bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent">50+</div>
-                  <div className="text-[#A6E1FF]/70">AI Projects</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl text-white bg-gradient-to-r from-[#C084F5] to-[#A6E1FF] bg-clip-text text-transparent">99.9%</div>
-                  <div className="text-[#A6E1FF]/70">Uptime</div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-4xl text-white bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] bg-clip-text text-transparent">24/7</div>
-                  <div className="text-[#A6E1FF]/70">Support</div>
-                </div>
+              <div className="grid grid-cols-3 gap-6 sm:gap-8">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="text-center lg:text-left"
+                >
+                  <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
+                    50+
+                  </div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">AI Projects</div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="text-center lg:text-left"
+                >
+                  <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
+                    99.9%
+                  </div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Uptime</div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="text-center lg:text-left"
+                >
+                  <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
+                    24/7
+                  </div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Support</div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Column - 3D Central Form */}
-            <div className="relative">
-              {/* Volumetric light bloom */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2D9CDB]/40 via-[#C084F5]/50 to-[#A6E1FF]/40 rounded-full blur-[120px] animate-pulse-glow"></div>
-              
-              {/* Main 3D Visual */}
-              <div className="relative">
-                <div className="rounded-[3rem] overflow-hidden border-2 border-[#A6E1FF]/30 shadow-2xl shadow-[#2D9CDB]/50 backdrop-blur-sm bg-white/5">
-                  <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1658988958556-72342117610f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMDNEJTIwaG9sb2dyYW18ZW58MXx8fHwxNzYzNDUwMTUzfDA&ixlib=rb-4.1.0&q=80&w=1080"
-                    alt="3D Neural Lattice Visualization"
-                    className="w-full h-auto"
-                  />
-                  {/* Gradient overlay for depth */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#020817] via-transparent to-transparent opacity-60"></div>
-                </div>
+            {/* Right Column - 3D Visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="relative h-[400px] sm:h-[500px] lg:h-[600px]"
+            >
+              {/* Central 3D Form */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                {/* Volumetric light bloom */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#2D9CDB]/30 via-transparent to-[#C084F5]/30 rounded-full blur-3xl" />
+                
+                {/* Main orbital ring */}
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                >
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] border-2 border-[#2D9CDB]/30 rounded-full" />
+                </motion.div>
 
-                {/* Floating orbs */}
-                <div className="absolute -top-8 -right-8 w-20 h-20 bg-gradient-to-br from-[#2D9CDB] to-[#A6E1FF] rounded-full flex items-center justify-center shadow-2xl shadow-[#2D9CDB]/60 animate-float">
-                  <Brain className="w-10 h-10 text-white" />
-                </div>
-                <div className="absolute -bottom-8 -left-8 w-20 h-20 bg-gradient-to-br from-[#C084F5] to-[#A6E1FF] rounded-full flex items-center justify-center shadow-2xl shadow-[#C084F5]/60 animate-float" style={{ animationDelay: '1s' }}>
-                  <Rocket className="w-10 h-10 text-white" />
-                </div>
+                <motion.div
+                  className="absolute inset-0"
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+                >
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] border-2 border-[#A6E1FF]/20 rounded-full" />
+                </motion.div>
+
+                {/* Orbiting Agent Cores */}
+                <AgentCore delay={0} size="lg" />
+                <AgentCore delay={1} size="sm" position={{ x: '20%', y: '30%' }} />
+                <AgentCore delay={2} size="sm" position={{ x: '75%', y: '25%' }} />
+                <AgentCore delay={3} size="sm" position={{ x: '65%', y: '70%' }} />
+                <AgentCore delay={4} size="sm" position={{ x: '25%', y: '75%' }} />
               </div>
-            </div>
+            </motion.div>
           </div>
-        </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce z-20">
-          <span className="text-[#A6E1FF] text-sm tracking-wider">Scroll to explore</span>
-          <div className="w-6 h-10 border-2 border-[#2D9CDB] rounded-full flex items-start justify-center p-2">
-            <div className="w-1.5 h-3 bg-gradient-to-b from-[#2D9CDB] to-[#C084F5] rounded-full"></div>
-          </div>
+          {/* Scroll Indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2"
+          >
+            <span className="text-xs text-[#A6E1FF]/70 uppercase tracking-wider">Scroll to explore</span>
+            <motion.div
+              animate={{ y: [0, 8, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <ChevronDown className="w-5 h-5 text-[#2D9CDB]" />
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
-      {/* SECTION 2: FEATURES SECTION */}
-      <section id="services" className="py-32 relative overflow-hidden">
+      {/* Features Section */}
+      <section id="features" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020817] via-[#0D1B4C] to-[#020817]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(45,156,219,0.08),transparent_50%)]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(192,132,245,0.08),transparent_50%)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#020817] via-[#0D1B4C] to-[#020817]" />
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-[#2D9CDB] rounded-full blur-3xl" />
+          <div className="absolute bottom-20 right-20 w-64 h-64 bg-[#C084F5] rounded-full blur-3xl" />
+        </div>
 
-        {/* Floating nodes decoration */}
-        <div className="absolute top-20 left-20 w-2 h-2 bg-[#A6E1FF] rounded-full animate-pulse"></div>
-        <div className="absolute top-40 right-40 w-2 h-2 bg-[#C084F5] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-20 left-1/3 w-2 h-2 bg-[#2D9CDB] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
-        
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] text-white rounded-full px-6 py-2 mb-6 shadow-lg shadow-[#2D9CDB]/30">
-              <SparklesIcon className="w-4 h-4" />
-              <span>Core Capabilities</span>
-            </div>
-            <h2 className="text-[#EEF8FF] mb-6 text-4xl lg:text-5xl">Agentic AI Systems</h2>
-            <p className="text-[#A6E1FF] text-xl max-w-3xl mx-auto leading-relaxed">
-              Autonomous systems that think, learn, and execute complex workflows without human intervention.
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+              Intelligent Solutions
+            </h2>
+            <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
+              Powered by cutting-edge AI and agentic automation technology
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <GlassmorphCard
-              icon={Bot}
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <GlassCard
+              icon={<Brain className="w-8 h-8" />}
               title="Agentic Automations"
-              description="Deploy autonomous AI agents that handle complex decision-making, data processing, and workflow orchestration with minimal oversight."
-              accentColor="blue"
+              description="Autonomous AI agents that learn, adapt, and execute complex workflows without human intervention."
+              index={0}
             />
-            <GlassmorphCard
-              icon={Network}
+            <GlassCard
+              icon={<Network className="w-8 h-8" />}
               title="AI Workflow Architecture"
-              description="Design and implement sophisticated multi-agent systems that collaborate, share knowledge, and optimize across domains."
-              accentColor="purple"
+              description="Design and deploy intelligent systems that orchestrate multi-step processes with precision."
+              index={1}
             />
-            <GlassmorphCard
-              icon={FileText}
+            <GlassCard
+              icon={<Blocks className="w-8 h-8" />}
               title="Intelligent Document Systems"
-              description="Advanced document processing with natural language understanding, automatic categorization, and smart data extraction."
-              accentColor="cyan"
+              description="Advanced NLP and understanding for automated document processing and knowledge extraction."
+              index={2}
             />
-            <GlassmorphCard
-              icon={Workflow}
-              title="Autonomous Operations Tools"
-              description="Self-managing systems that monitor, adapt, and optimize operations in real-time based on learned patterns."
-              accentColor="blue"
-            />
-            <GlassmorphCard
-              icon={Zap}
-              title="Real-Time Intelligence"
-              description="Lightning-fast AI-powered analytics and decision-making engines that process data streams at scale."
-              accentColor="purple"
-            />
-            <GlassmorphCard
-              icon={Cpu}
-              title="Adaptive Learning"
-              description="Systems that continuously improve through machine learning, user feedback, and operational data analysis."
-              accentColor="cyan"
+            <GlassCard
+              icon={<Cpu className="w-8 h-8" />}
+              title="Autonomous Operations"
+              description="Self-managing systems that monitor, optimize, and scale automatically based on real-time data."
+              index={3}
             />
           </div>
         </div>
       </section>
 
-      {/* SECTION 3: PROCESS TIMELINE */}
-      <section id="process" className="py-32 relative overflow-hidden">
+      {/* Process Timeline Section */}
+      <section id="process" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-[#020817]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(166,225,255,0.05),transparent_70%)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#020817] to-[#0D1B4C]" />
         
-        <div className="relative max-w-6xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-24">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] text-white rounded-full px-6 py-2 mb-6 shadow-lg shadow-[#2D9CDB]/30">
-              <SparklesIcon className="w-4 h-4" />
-              <span>Our Approach</span>
-            </div>
-            <h2 className="text-[#EEF8FF] mb-6 text-4xl lg:text-5xl">Our Process</h2>
-            <p className="text-[#A6E1FF] text-xl max-w-3xl mx-auto leading-relaxed">
-              A systematic approach to building intelligent systems that deliver measurable results.
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+              Our Process
+            </h2>
+            <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
+              From concept to deployment: a proven methodology for AI excellence
             </p>
-          </div>
+          </motion.div>
 
-          <HorizontalTimeline steps={timelineSteps} />
+          {/* Timeline */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-8">
+            <TimelineStep
+              number="01"
+              title="Discovery"
+              description="Deep analysis of your business needs and AI opportunities"
+              icon={<Sparkles className="w-8 h-8" />}
+              index={0}
+            />
+            <TimelineStep
+              number="02"
+              title="System Design"
+              description="Architecting intelligent solutions with scalable foundations"
+              icon={<GitBranch className="w-8 h-8" />}
+              index={1}
+            />
+            <TimelineStep
+              number="03"
+              title="Agent Training"
+              description="Fine-tuning AI models and autonomous systems for peak performance"
+              icon={<Zap className="w-8 h-8" />}
+              index={2}
+            />
+            <TimelineStep
+              number="04"
+              title="Deployment"
+              description="Seamless integration with continuous monitoring and optimization"
+              icon={<Rocket className="w-8 h-8" />}
+              index={3}
+              isLast
+            />
+          </div>
         </div>
       </section>
 
-      {/* SECTION 4: SHOWCASE / CASE STUDIES */}
-      <section id="showcase" className="py-32 relative overflow-hidden">
+      {/* Showcase Section */}
+      <section id="showcase" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020817] via-[#0D1B4C] to-[#020817]"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(192,132,245,0.08),transparent_50%)]"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] text-white rounded-full px-6 py-2 mb-6 shadow-lg shadow-[#2D9CDB]/30">
-              <SparklesIcon className="w-4 h-4" />
-              <span>Showcase</span>
-            </div>
-            <h2 className="text-[#EEF8FF] mb-6 text-4xl lg:text-5xl">Case Studies</h2>
-            <p className="text-[#A6E1FF] text-xl max-w-3xl mx-auto leading-relaxed">
-              Real-world applications of AI and automation transforming businesses across industries.
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B4C] via-[#020817] to-[#0D1B4C]" />
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-40 right-40 w-96 h-96 bg-[#C084F5] rounded-full blur-3xl animate-pulse" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+              Case Studies
+            </h2>
+            <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
+              Real-world AI implementations driving measurable results
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <ShowcaseCard
-              title="Enterprise Data Pipeline"
-              description="Automated data ingestion system processing 10M+ records daily with intelligent error recovery and real-time analytics."
-              tags={['AI', 'Automation', 'Integration']}
-              image="https://images.unsplash.com/photo-1617049037028-d4746ed5e6bc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwdmlzdWFsaXphdGlvbiUyMHRlY2hub2xvZ3l8ZW58MXx8fHwxNzYzNDUwMTU0fDA&ixlib=rb-4.1.0&q=80&w=1080"
-              gradient="blue"
+          {/* Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            <ShowcaseProject
+              title="Enterprise AI Pipeline"
+              description="Automated data processing system handling 10M+ records daily with 99.8% accuracy."
+              tags={['AI', 'Automation', 'Enterprise']}
+              gradient="from-[#2D9CDB] to-[#1E88E5]"
+              index={0}
             />
-            <ShowcaseCard
-              title="Neural Assistant Platform"
-              description="Intelligent customer service system with natural language understanding, reducing support tickets by 60%."
-              tags={['Agents', 'AI', 'NLP']}
-              image="https://images.unsplash.com/photo-1761740533449-b8d4385e60b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXVyYWwlMjBuZXR3b3JrJTIwdmlzdWFsaXphdGlvbnxlbnwxfHx8fDE3NjM0NTAxNTN8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              gradient="purple"
+            <ShowcaseProject
+              title="Intelligent CRM Agent"
+              description="Autonomous customer engagement system with natural language understanding."
+              tags={['Agents', 'NLP', 'CRM']}
+              gradient="from-[#C084F5] to-[#9333EA]"
+              index={1}
             />
-            <ShowcaseCard
-              title="Smart Cloud Infrastructure"
-              description="Multi-region platform with auto-scaling, disaster recovery, and AI-driven resource optimization."
-              tags={['Automation', 'AI', 'Cloud']}
-              image="https://images.unsplash.com/photo-1744640326166-433469d102f2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxBSSUyMGNpcmN1aXQlMjBib2FyZHxlbnwxfHx8fDE3NjM0NDg2MTl8MA&ixlib=rb-4.1.0&q=80&w=1080"
-              gradient="cyan"
+            <ShowcaseProject
+              title="Document Intelligence Hub"
+              description="AI-powered document analysis and workflow automation for legal teams."
+              tags={['AI', 'Documents', 'Legal']}
+              gradient="from-[#A6E1FF] to-[#2D9CDB]"
+              index={2}
+            />
+            <ShowcaseProject
+              title="Predictive Analytics Engine"
+              description="Real-time forecasting system for supply chain optimization."
+              tags={['Analytics', 'ML', 'Logistics']}
+              gradient="from-[#1E88E5] to-[#2D9CDB]"
+              index={3}
+            />
+            <ShowcaseProject
+              title="Autonomous Testing Framework"
+              description="Self-learning QA system that adapts to codebase changes automatically."
+              tags={['Automation', 'Testing', 'DevOps']}
+              gradient="from-[#9333EA] to-[#C084F5]"
+              index={4}
+            />
+            <ShowcaseProject
+              title="Multi-Agent Orchestration"
+              description="Coordinated AI agents managing complex business workflows end-to-end."
+              tags={['Agents', 'Integration', 'Enterprise']}
+              gradient="from-[#2D9CDB] to-[#A6E1FF]"
+              index={5}
             />
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-32 relative overflow-hidden">
-        <CosmicBackground />
+      {/* Footer */}
+      <footer className="relative border-t border-[#2D9CDB]/20 py-12 sm:py-16 px-4 sm:px-6 lg:px-12">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B4C] to-[#020817]" />
         
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(192,132,245,0.15),transparent_70%)]"></div>
+        <div className="relative z-10 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2D9CDB] to-[#A6E1FF] flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-lg font-bold text-[#EEF8FF]">Innovation1</span>
+              </div>
+              <p className="text-sm text-[#A6E1FF]/70">
+                Building tomorrow's intelligent systems today.
+              </p>
+            </div>
 
-        <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center z-10">
-          <div className="mb-8">
-            <div className="inline-block w-24 h-24 bg-gradient-to-br from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] rounded-[2rem] flex items-center justify-center shadow-2xl shadow-[#2D9CDB]/50 mb-8 animate-float">
-              <SparklesIcon className="w-12 h-12 text-white" />
+            <div>
+              <h3 className="font-semibold text-[#EEF8FF] mb-4">Solutions</h3>
+              <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
+                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Agentic AI</a></li>
+                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Automation</a></li>
+                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Architecture</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-[#EEF8FF] mb-4">Company</h3>
+              <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
+                <li><a href="#process" className="hover:text-[#A6E1FF] transition-colors">Process</a></li>
+                <li><a href="#showcase" className="hover:text-[#A6E1FF] transition-colors">Case Studies</a></li>
+                <li><Link to="/login" className="hover:text-[#A6E1FF] transition-colors">Staff Portal</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-[#EEF8FF] mb-4">Connect</h3>
+              <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
+                <li><a href="mailto:info@innovation1.com" className="hover:text-[#A6E1FF] transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-[#A6E1FF] transition-colors">Support</a></li>
+              </ul>
             </div>
           </div>
-          <h2 className="text-white mb-6 text-4xl lg:text-5xl">Ready to Build the Future?</h2>
-          <p className="text-[#A6E1FF] text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-            Let's discuss how AI-powered systems can transform your business operations and accelerate your growth.
-          </p>
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <CosmicButton variant="primary" icon={ArrowRight} size="lg">
-              Schedule Consultation
-            </CosmicButton>
-            <CosmicButton variant="secondary" size="lg">
-              View Pricing
-            </CosmicButton>
+
+          <div className="pt-8 border-t border-[#2D9CDB]/20 text-center text-sm text-[#A6E1FF]/60">
+            <p>&copy; 2025 Innovation1 Web Design & Development. All rights reserved.</p>
           </div>
         </div>
-      </section>
-
-      <Footer />
+      </footer>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { CosmicButton } from './CosmicButton';
-import { Sparkles } from 'lucide-react';
+import { Innovation1Logo } from './Innovation1Logo';
 
 export function StickyNav() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,7 +17,7 @@ export function StickyNav() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`hidden lg:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
           ? 'bg-[#020817]/90 backdrop-blur-2xl border-b border-[#2D9CDB]/20 shadow-lg shadow-[#2D9CDB]/5'
           : 'bg-transparent'
@@ -25,17 +25,8 @@ export function StickyNav() {
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className={`w-12 h-12 bg-gradient-to-br from-[#2D9CDB] via-[#C084F5] to-[#A6E1FF] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-xl ${
-              isScrolled ? 'shadow-[#2D9CDB]/30' : 'shadow-[#2D9CDB]/50'
-            }`}>
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className={`text-xl transition-colors ${
-              isScrolled ? 'text-[#EEF8FF]' : 'text-white'
-            }`}>
-              Innovation1
-            </span>
+          <Link to="/">
+            <Innovation1Logo size="md" animated={true} showText={true} />
           </Link>
 
           <div className="flex items-center gap-8">
