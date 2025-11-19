@@ -72,6 +72,9 @@ export default function Innovation1Landing() {
               <a href="#features" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
                 Features
               </a>
+              <Link to="/agentic-ai" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
+                Agentic AI
+              </Link>
               <a href="#process" className="text-sm font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors">
                 Process
               </a>
@@ -114,6 +117,13 @@ export default function Innovation1Landing() {
               >
                 Features
               </a>
+              <Link
+                to="/agentic-ai"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
+              >
+                Agentic AI
+              </Link>
               <a
                 href="#process"
                 onClick={() => setMobileMenuOpen(false)}

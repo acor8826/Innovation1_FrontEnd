@@ -1,6 +1,7 @@
 import './styles/globals.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Innovation1Landing from './pages/Innovation1Landing';
+import AgenticAISolutions from './pages/AgenticAISolutions';
 import Innovation1Login from './pages/Innovation1Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
@@ -14,6 +15,7 @@ export default function App() {
       <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Innovation1Landing />} />
+        <Route path="/agentic-ai" element={<AgenticAISolutions />} />
         <Route path="/login" element={<Innovation1Login />} />
         <Route
           path="/dashboard"
