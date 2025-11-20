@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChevronRight, Edit, Plus, Calendar, Users as UsersIcon } from 'lucide-react';
+import { ChevronRight, Edit, Plus, Calendar, Users as UsersIcon, CheckSquare } from 'lucide-react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
 import { projects } from '../data/mockData';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -15,11 +15,70 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
+import { AddTaskModal } from '../components/kanban/AddTaskModal';
+import { taskService } from '../services/taskService';
+import { Task } from '../types/task';
+import { toast } from 'sonner';
 
 export default function ProjectDetail() {
   const { id } = useParams();
   const project = projects.find((p) => p.id === id);
   const [selectedStatus, setSelectedStatus] = useState(project?.status || 'active');
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [projectTasks, setProjectTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load tasks for this project
+  useEffect(() => {
+    loadProjectTasks();
+  }, [id]);
+
+  const loadProjectTasks = async () => {
+    try {
+      setLoading(true);
+      const allTasks = await taskService.getTasks();
+      // Filter tasks for this project - match by project ID or legacy tasks
+      const filteredTasks = allTasks.filter((task) => task.projectId === id);
+      setProjectTasks(filteredTasks);
+    } catch (error) {
+      console.error('Failed to load project tasks:', error);
+      toast.error('Failed to load tasks');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle add task
+  const handleAddTask = async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      // Ensure the task is associated with this project
+      const taskWithProject = {
+        ...taskData,
+        projectId: id,
+        projectName: project?.name || '',
+      };
+      
+      await taskService.createTask(taskWithProject);
+      await loadProjectTasks();
+      toast.success('Task created successfully');
+    } catch (error) {
+      console.error('Failed to create task:', error);
+      toast.error('Failed to create task');
+    }
+  };
+
+  // Handle task completion toggle
+  const handleToggleTask = async (task: Task) => {
+    try {
+      const newStatus = task.status === 'done' ? 'in-progress' : 'done';
+      await taskService.updateTask(task.id, { status: newStatus });
+      await loadProjectTasks();
+      toast.success('Task updated');
+    } catch (error) {
+      console.error('Failed to update task:', error);
+      toast.error('Failed to update task');
+    }
+  };
 
   if (!project) {
     return (
@@ -34,9 +93,9 @@ export default function ProjectDetail() {
     );
   }
 
-  const completedTasks = project.tasks.filter((t) => t.completed).length;
-  const totalTasks = project.tasks.length;
-  const progressPercentage = Math.round((completedTasks / totalTasks) * 100);
+  const completedTasks = projectTasks.filter((t) => t.status === 'done').length;
+  const totalTasks = projectTasks.length;
+  const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   return (
     <DashboardLayout>
@@ -96,30 +155,69 @@ export default function ProjectDetail() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-gray-900">Tasks</h3>
-                <Button>
+                <Button onClick={() => setIsAddModalOpen(true)}>
                   <Plus className="w-4 h-4 mr-2" />
                   Add Task
                 </Button>
               </div>
               <div className="space-y-4">
-                {project.tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-start gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    <Checkbox checked={task.completed} />
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className={`text-gray-900 ${
-                          task.completed ? 'line-through text-gray-500' : ''
-                        }`}
-                      >
-                        {task.title}
-                      </p>
-                      <p className="text-gray-500 mt-1">Due: {task.dueDate}</p>
-                    </div>
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+                    <p className="text-gray-500 text-sm">Loading tasks...</p>
                   </div>
-                ))}
+                ) : projectTasks.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No tasks yet. Click "Add Task" to create one.</p>
+                  </div>
+                ) : (
+                  projectTasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="flex items-start gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100"
+                    >
+                      <div className="pt-0.5">
+                        <Checkbox 
+                          checked={task.status === 'done'} 
+                          onCheckedChange={() => handleToggleTask(task)} 
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className={`text-gray-900 ${
+                            task.status === 'done' ? 'line-through text-gray-500' : ''
+                          }`}
+                        >
+                          {task.title}
+                        </p>
+                        {task.description && (
+                          <p className="text-gray-500 text-sm mt-1">{task.description}</p>
+                        )}
+                        <div className="flex items-center gap-3 mt-2">
+                          {task.dueDate && (
+                            <p className="text-gray-500 text-xs">
+                              Due: {new Date(task.dueDate).toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric',
+                                year: 'numeric' 
+                              })}
+                            </p>
+                          )}
+                          {task.priority && (
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${
+                              task.priority === 'urgent' ? 'bg-red-50 text-red-600' :
+                              task.priority === 'high' ? 'bg-orange-50 text-orange-600' :
+                              task.priority === 'medium' ? 'bg-yellow-50 text-yellow-600' :
+                              'bg-blue-50 text-blue-600'
+                            }`}>
+                              {task.priority}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -206,6 +304,14 @@ export default function ProjectDetail() {
           </div>
         </div>
       </div>
+      <AddTaskModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddTask}
+        projects={[]} // Empty array since we're pre-populating project
+        projectId={id}
+        projectName={project.name}
+      />
     </DashboardLayout>
   );
 }

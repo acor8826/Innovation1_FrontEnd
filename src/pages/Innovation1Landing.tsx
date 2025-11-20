@@ -23,6 +23,7 @@ import { NeuralGrid } from '../components/innovation1/NeuralGrid';
 import { GlassCard } from '../components/innovation1/GlassCard';
 import { TimelineStep } from '../components/innovation1/TimelineStep';
 import { ShowcaseProject } from '../components/innovation1/ShowcaseProject';
+import { QuantumAtom } from '../components/innovation1/QuantumAtom';
 
 export default function Innovation1Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -268,42 +269,14 @@ export default function Innovation1Landing() {
               </div>
             </motion.div>
 
-            {/* Right Column - 3D Visual */}
+            {/* Right Column - Quantum Wave Function Visualization */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="relative h-[400px] sm:h-[500px] lg:h-[600px]"
             >
-              {/* Central 3D Form */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Volumetric light bloom */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2D9CDB]/30 via-transparent to-[#C084F5]/30 rounded-full blur-3xl" />
-                
-                {/* Main orbital ring */}
-                <motion.div
-                  className="absolute inset-0"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-                >
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] border-2 border-[#2D9CDB]/30 rounded-full" />
-                </motion.div>
-
-                <motion.div
-                  className="absolute inset-0"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-                >
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] h-[250px] sm:w-[350px] sm:h-[350px] border-2 border-[#A6E1FF]/20 rounded-full" />
-                </motion.div>
-
-                {/* Orbiting Agent Cores */}
-                <AgentCore delay={0} size="lg" />
-                <AgentCore delay={1} size="sm" position={{ x: '20%', y: '30%' }} />
-                <AgentCore delay={2} size="sm" position={{ x: '75%', y: '25%' }} />
-                <AgentCore delay={3} size="sm" position={{ x: '65%', y: '70%' }} />
-                <AgentCore delay={4} size="sm" position={{ x: '25%', y: '75%' }} />
-              </div>
+              <QuantumAtom />
             </motion.div>
           </div>
 

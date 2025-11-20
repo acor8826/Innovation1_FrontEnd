@@ -1,39 +1,63 @@
-# Innovation1 Web Design & Development - Robots.txt
-# Allow all search engines and AI crawlers
+# Innovation1 Robots.txt
+# Control search engine crawler access
 
+# Global Rules
 User-agent: *
-Allow: /
 
-# AI Crawlers - Specific permissions
+# Allow public pages
+Allow: /
+Allow: /agentic-ai
+Allow: /login
+
+# Disallow authenticated/internal pages
+Disallow: /dashboard
+Disallow: /projects
+Disallow: /tasks
+Disallow: /team
+Disallow: /settings
+Disallow: /activity
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Allow CSS and JS for proper rendering
+Allow: /*.css$
+Allow: /*.js$
+
+# Sitemap location
+Sitemap: https://innovation1.com/sitemap.xml
+
+# Crawl delay (be respectful)
+Crawl-delay: 1
+
+# Specific bot instructions
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Block AI scrapers that don't respect robots.txt
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: Google-Extended
+User-agent: Claude-Web
 Allow: /
 
 User-agent: anthropic-ai
 Allow: /
 
-User-agent: Claude-Web
+User-agent: Google-Extended
 Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: cohere-ai
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Applebot-Extended
-Allow: /
-
-# Sitemap location
-Sitemap: https://innovation1.com/sitemap.xml
-
-# Crawl delay (optional)
-Crawl-delay: 1

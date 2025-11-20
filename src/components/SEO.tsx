@@ -10,7 +10,10 @@ interface SEOProps {
   author?: string;
   publishedTime?: string;
   modifiedTime?: string;
-  structuredData?: object;
+  structuredData?: object | object[];
+  noindex?: boolean;
+  aiContentCategory?: string;
+  aiPrimaryTopic?: string;
 }
 
 export function SEO({
@@ -24,6 +27,9 @@ export function SEO({
   publishedTime,
   modifiedTime,
   structuredData,
+  noindex = false,
+  aiContentCategory = 'web development, AI automation, software engineering',
+  aiPrimaryTopic = 'service',
 }: SEOProps) {
   useEffect(() => {
     // Set document title
@@ -49,7 +55,7 @@ export function SEO({
       setMetaTag('keywords', keywords, true);
     }
     setMetaTag('author', author, true);
-    setMetaTag('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1', true);
+    setMetaTag('robots', noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1', true);
     setMetaTag('googlebot', 'index, follow', true);
 
     // Open Graph tags
@@ -109,9 +115,9 @@ export function SEO({
     }
 
     // AI Discovery optimization meta tags
-    setMetaTag('ai:content_type', 'service', true);
-    setMetaTag('ai:category', 'web development, AI automation, software engineering', true);
-  }, [title, description, keywords, ogType, ogImage, canonical, author, publishedTime, modifiedTime, structuredData]);
+    setMetaTag('ai:content_type', aiPrimaryTopic, true);
+    setMetaTag('ai:category', aiContentCategory, true);
+  }, [title, description, keywords, ogType, ogImage, canonical, author, publishedTime, modifiedTime, structuredData, noindex, aiContentCategory, aiPrimaryTopic]);
 
   return null;
 }

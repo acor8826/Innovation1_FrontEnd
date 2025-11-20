@@ -6,6 +6,9 @@ import Innovation1Login from './pages/Innovation1Login';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import ProjectDetail from './pages/ProjectDetail';
+import Tasks from './pages/Tasks';
+import Team from './pages/Team';
+import AtomWaveFunctionDemo from './pages/AtomWaveFunctionDemo';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Toaster } from 'sonner@2.0.3';
 
@@ -17,6 +20,7 @@ export default function App() {
         <Route path="/" element={<Innovation1Landing />} />
         <Route path="/agentic-ai" element={<AgenticAISolutions />} />
         <Route path="/login" element={<Innovation1Login />} />
+        <Route path="/atom-demo" element={<AtomWaveFunctionDemo />} />
         <Route
           path="/dashboard"
           element={
@@ -38,6 +42,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ProjectDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <ProtectedRoute>
+              <Tasks />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/team"
+          element={
+            <ProtectedRoute>
+              <Team />
             </ProtectedRoute>
           }
         />
