@@ -1,66 +1,17 @@
-// API Client for Innovation1 Backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+// API Client Service for Innovation1
+// Points to Cloud Run backend
 
-interface RequestOptions extends RequestInit {
-  body?: any;
-}
+const isProduction = window.location.hostname !== 'localhost';
+const BACKEND_BASE_URL = isProduction 
+  ? 'https://innovation1-api-687835063861.us-central1.run.app/api'
+  : 'http://localhost:8001/api';
 
-class APIClient {
-  private baseUrl: string;
+console.log(`API Client initialized: ${BACKEND_BASE_URL}`);
 
-  constructor(baseUrl: string = API_BASE_URL) {
-    this.baseUrl = baseUrl;
-  }
+export const apiClient = {
+  baseUrl: BACKEND_BASE_URL,
 
-  private getToken(): string | null {
-    try {
-      const authData = localStorage.getItem('innovation1_auth_token');
-      return authData ? authData : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private async request<T>(
-    endpoint: string,
-    options: RequestOptions = {}
-  ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
-    const token = this.getToken();
-
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    };
-
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-        body: options.body ? JSON.stringify(options.body) : undefined,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.detail ||
-          `HTTP ${response.status}: ${response.statusText}`
-        );
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error(`API Error [${endpoint}]:`, error);
-      throw error;
-    }
-  }
-
-  // Authentication
-  async login(email: string, password: string): Promise<{ access_token: string; token_type: string; user: any }> {
+  async login(email: string, password: string) {
     const response = await fetch(`${this.baseUrl}/auth/login`, {
       method: 'POST',
       headers: {
@@ -78,191 +29,256 @@ class APIClient {
     }
 
     return response.json();
-  }
+  },
 
-  async getCurrentUser(): Promise<any> {
-    return this.request('/auth/me');
-  }
+  async getToken() {
+    return localStorage.getItem('innovation1_auth_token');
+  },
 
-  async logout(): Promise<void> {
-    try {
-      await this.request('/auth/logout', { method: 'POST' });
-    } catch (error) {
-      console.warn('Logout request failed, clearing local auth anyway:', error);
+  async getCurrentUser() {
+    const token = await this.getToken();
+    if (!token) throw new Error('No authentication token found');
+
+    const response = await fetch(`${this.baseUrl}/auth/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || 'Failed to fetch current user');
     }
+
+    return response.json();
+  },
+
+  async logout() {
+    const token = await this.getToken();
+
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` }),
+        },
+      });
+
+      if (!response.ok) {
+        console.warn('Logout API call failed, clearing local session anyway');
+      }
+    } catch (error) {
+      console.warn('Logout error:', error);
+    }
+
+    // Always clear local storage
     localStorage.removeItem('innovation1_auth_token');
-  }
+    localStorage.removeItem('innovation1_user');
+    return { success: true };
+  },
 
-  // Projects
-  async getProjects(filters?: { status?: string; search?: string }): Promise<any[]> {
-    const params = new URLSearchParams();
-    if (filters?.status) params.append('status', filters.status);
-    if (filters?.search) params.append('search', filters.search);
-
-    const query = params.toString();
-    return this.request(`/projects${query ? `?${query}` : ''}`);
-  }
-
-  async getProject(id: string): Promise<any> {
-    return this.request(`/projects/${id}`);
-  }
-
-  async createProject(data: any): Promise<any> {
-    return this.request('/projects', {
-      method: 'POST',
-      body: data,
+  async getDashboardKPIs() {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/dashboard/kpis`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
     });
-  }
 
-  async updateProject(id: string, data: any): Promise<any> {
-    return this.request(`/projects/${id}`, {
+    if (!response.ok) throw new Error('Failed to fetch KPIs');
+    return response.json();
+  },
+
+  async getProjects() {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/projects`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch projects');
+    return response.json();
+  },
+
+  async getTasks() {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/tasks`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch tasks');
+    return response.json();
+  },
+
+  async getTeamMembers() {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/team`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch team members');
+    return response.json();
+  },
+
+  async getDashboardActivities() {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/dashboard/activities`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch activities');
+    return response.json();
+  },
+
+  async createProject(project: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/projects`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(project),
+    });
+
+    if (!response.ok) throw new Error('Failed to create project');
+    return response.json();
+  },
+
+  async updateProject(projectId: string, project: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
       method: 'PUT',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(project),
     });
-  }
 
-  async deleteProject(id: string): Promise<void> {
-    return this.request(`/projects/${id}`, {
+    if (!response.ok) throw new Error('Failed to update project');
+    return response.json();
+  },
+
+  async deleteProject(projectId: string) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
     });
-  }
 
-  async addProjectMember(projectId: string, memberId: string): Promise<any> {
-    return this.request(`/projects/${projectId}/members`, {
+    if (!response.ok) throw new Error('Failed to delete project');
+    return response.json();
+  },
+
+  async createTask(task: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/tasks`, {
       method: 'POST',
-      body: { team_member_id: memberId },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(task),
     });
-  }
 
-  async removeProjectMember(projectId: string, memberId: string): Promise<void> {
-    return this.request(`/projects/${projectId}/members/${memberId}`, {
-      method: 'DELETE',
-    });
-  }
+    if (!response.ok) throw new Error('Failed to create task');
+    return response.json();
+  },
 
-  // Tasks
-  async getTasks(filters?: {
-    status?: string;
-    priority?: string;
-    projectId?: string;
-    assigneeId?: string;
-  }): Promise<any[]> {
-    const params = new URLSearchParams();
-    if (filters?.status) params.append('status', filters.status);
-    if (filters?.priority) params.append('priority', filters.priority);
-    if (filters?.projectId) params.append('project_id', filters.projectId);
-    if (filters?.assigneeId) params.append('assignee_id', filters.assigneeId);
-
-    const query = params.toString();
-    return this.request(`/tasks${query ? `?${query}` : ''}`);
-  }
-
-  async getTask(id: string): Promise<any> {
-    return this.request(`/tasks/${id}`);
-  }
-
-  async createTask(data: any): Promise<any> {
-    return this.request('/tasks', {
-      method: 'POST',
-      body: data,
-    });
-  }
-
-  async updateTask(id: string, data: any): Promise<any> {
-    return this.request(`/tasks/${id}`, {
+  async updateTask(taskId: string, task: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/tasks/${taskId}`, {
       method: 'PUT',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(task),
     });
-  }
 
-  async updateTaskStatus(id: string, status: string, order?: number): Promise<any> {
-    return this.request(`/tasks/${id}/status`, {
-      method: 'PATCH',
-      body: { status, order: order ?? 0 },
-    });
-  }
+    if (!response.ok) throw new Error('Failed to update task');
+    return response.json();
+  },
 
-  async deleteTask(id: string): Promise<void> {
-    return this.request(`/tasks/${id}`, {
+  async deleteTask(taskId: string) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/tasks/${taskId}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
     });
-  }
 
-  // Team Members
-  async getTeamMembers(): Promise<any[]> {
-    return this.request('/team');
-  }
+    if (!response.ok) throw new Error('Failed to delete task');
+    return response.json();
+  },
 
-  async getTeamMember(id: string): Promise<any> {
-    return this.request(`/team/${id}`);
-  }
-
-  async createTeamMember(data: any): Promise<any> {
-    return this.request('/team', {
+  async createTeamMember(member: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/team`, {
       method: 'POST',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(member),
     });
-  }
 
-  async updateTeamMember(id: string, data: any): Promise<any> {
-    return this.request(`/team/${id}`, {
+    if (!response.ok) throw new Error('Failed to create team member');
+    return response.json();
+  },
+
+  async updateTeamMember(memberId: string, member: any) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/team/${memberId}`, {
       method: 'PUT',
-      body: data,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
+      body: JSON.stringify(member),
     });
-  }
 
-  async deleteTeamMember(id: string): Promise<void> {
-    return this.request(`/team/${id}`, {
+    if (!response.ok) throw new Error('Failed to update team member');
+    return response.json();
+  },
+
+  async deleteTeamMember(memberId: string) {
+    const token = await this.getToken();
+    const response = await fetch(`${this.baseUrl}/team/${memberId}`, {
       method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+      },
     });
-  }
 
-  // Dashboard
-  async getDashboardKPIs(): Promise<any> {
-    return this.request('/dashboard/kpis');
-  }
-
-  async getDashboardActivities(skip?: number, limit?: number): Promise<any[]> {
-    const params = new URLSearchParams();
-    if (skip) params.append('skip', skip.toString());
-    if (limit) params.append('limit', limit.toString());
-
-    const query = params.toString();
-    return this.request(`/dashboard/activities${query ? `?${query}` : ''}`);
-  }
-
-  async getDashboardStatistics(): Promise<any> {
-    return this.request('/dashboard/statistics');
-  }
-
-  // Users
-  async createUser(data: any): Promise<any> {
-    return this.request('/users', {
-      method: 'POST',
-      body: data,
-    });
-  }
-
-  async getUsers(): Promise<any[]> {
-    return this.request('/users');
-  }
-
-  async getUser(id: string): Promise<any> {
-    return this.request(`/users/${id}`);
-  }
-
-  async updateUser(id: string, data: any): Promise<any> {
-    return this.request(`/users/${id}`, {
-      method: 'PUT',
-      body: data,
-    });
-  }
-
-  async deleteUser(id: string): Promise<void> {
-    return this.request(`/users/${id}`, {
-      method: 'DELETE',
-    });
-  }
-}
-
-export const apiClient = new APIClient();
+    if (!response.ok) throw new Error('Failed to delete team member');
+    return response.json();
+  },
+};
