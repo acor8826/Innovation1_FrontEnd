@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
@@ -18,27 +19,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { apiClient } from '../../services/api';
 
 interface AddProjectModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onProjectCreated?: () => void;
 }
 
-export function AddProjectModal({ open, onOpenChange }: AddProjectModalProps) {
+export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddProjectModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    status: 'active',
-    owner: '',
+    status: 'ACTIVE',
     deadline: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle project creation
-    console.log('Creating project:', formData);
-    onOpenChange(false);
-    setFormData({ name: '', description: '', status: 'active', owner: '', deadline: '' });
+
+    if (!formData.name.trim()) {
+      toast.error('Project name is required');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await apiClient.createProject({
+        name: formData.name,
+        description: formData.description,
+        status: formData.status,
+        deadline: formData.deadline || null,
+      });
+
+      toast.success('Project created successfully');
+      onOpenChange(false);
+      setFormData({ name: '', description: '', status: 'ACTIVE', deadline: '' });
+      onProjectCreated?.();
+    } catch (error: any) {
+      console.error('Error creating project:', error);
+      toast.error(error.message || 'Failed to create project');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,21 +106,11 @@ export function AddProjectModal({ open, onOpenChange }: AddProjectModalProps) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="blocked">Blocked</SelectItem>
+                  <SelectItem value="ACTIVE">Active</SelectItem>
+                  <SelectItem value="PENDING">Pending</SelectItem>
+                  <SelectItem value="BLOCKED">Blocked</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="owner">Project Owner</Label>
-              <Input
-                id="owner"
-                placeholder="Enter owner name"
-                value={formData.owner}
-                onChange={(e) => setFormData({ ...formData, owner: e.target.value })}
-                required
-              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="deadline">Deadline</Label>
@@ -109,10 +123,12 @@ export function AddProjectModal({ open, onOpenChange }: AddProjectModalProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button type="submit">Create Project</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Creating...' : 'Create Project'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

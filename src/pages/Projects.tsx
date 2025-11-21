@@ -17,23 +17,23 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await apiClient.getProjects();
-        if (response && Array.isArray(response)) {
-          setProjects(response);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching projects:', err);
-        setError('Failed to load projects. Using demo data.');
-        setLoading(false);
+  const fetchProjects = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiClient.getProjects();
+      if (response && Array.isArray(response)) {
+        setProjects(response);
       }
-    };
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching projects:', err);
+      setError('Failed to load projects. Using demo data.');
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProjects();
   }, []);
 
@@ -152,7 +152,7 @@ export default function Projects() {
         )}
 
         {/* Add Project Modal */}
-        <AddProjectModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+        <AddProjectModal open={isModalOpen} onOpenChange={setIsModalOpen} onProjectCreated={fetchProjects} />
       </div>
     </DashboardLayout>
   );
