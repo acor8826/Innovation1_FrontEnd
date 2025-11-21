@@ -43,11 +43,11 @@ export function Header({ title }: HeaderProps) {
         {user && (
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt={user.name} />
-              <AvatarFallback>{user.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+              <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt={user.name || user.email} />
+              <AvatarFallback>{(user.name || user.email).split(' ').map((n: string) => n[0]).join('')}</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-900">{user.name}</span>
+              <span className="text-sm font-medium text-gray-900">{user.name || user.email}</span>
               <span className="text-xs text-gray-500">{user.role}</span>
             </div>
           </div>
