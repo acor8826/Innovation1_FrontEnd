@@ -3,6 +3,7 @@ import { ArrowLeft, Lock, Mail, Sparkles, User } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { useState, useEffect } from 'react';
 import { auth } from '../utils/auth';
+import { apiClient } from '../services/api';
 import { ParticleField } from '../components/innovation1/ParticleField';
 import { NeuralGrid } from '../components/innovation1/NeuralGrid';
 import { motion } from 'motion/react';
@@ -25,7 +26,7 @@ export default function Innovation1Login() {
     }
   }, [navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -37,13 +38,27 @@ export default function Innovation1Login() {
       return;
     }
 
-    // Attempt login
-    const success = auth.login(formData.email, formData.password);
+    try {
+      // Call API login
+      const response = await apiClient.login(formData.email, formData.password);
 
-    if (success) {
-      navigate('/dashboard', { replace: true });
-    } else {
-      setError('Invalid credentials. Try: admin@innovation1.com / admin123');
+      if (response && response.access_token) {
+        // Store token and user info
+        localStorage.setItem('innovation1_auth_token', response.access_token);
+        localStorage.setItem('innovation1_user', JSON.stringify(response.user));
+
+        // Also set in auth utility
+        auth.login(formData.email, formData.password);
+
+        // Redirect to dashboard
+        navigate('/dashboard', { replace: true });
+      } else {
+        setError('Invalid credentials. Please try again.');
+        setIsLoading(false);
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      setError('Login failed. Please check your credentials and try again.');
       setIsLoading(false);
     }
   };
@@ -114,7 +129,7 @@ export default function Innovation1Login() {
           {/* Demo Credentials Info */}
           <div className="mb-6 p-3 bg-[#2D9CDB]/10 border border-[#2D9CDB]/30 rounded-xl">
             <p className="text-[#A6E1FF] text-xs text-center">
-              Demo: admin@innovation1.com / admin123
+              Demo: acor8826@hotmail.com / C0rry2025!
             </p>
           </div>
 

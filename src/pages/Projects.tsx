@@ -1,17 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Grid, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
-import { projects } from '../data/mockData';
+import { projects as fallbackProjects } from '../data/mockData';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Button } from '../components/ui/button';
 import { AddProjectModal } from '../components/projects/AddProjectModal';
+import { apiClient } from '../services/api';
 
 export default function Projects() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setProjects] = useState(fallbackProjects);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await apiClient.getProjects();
+        if (response && Array.isArray(response)) {
+          setProjects(response);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError('Failed to load projects. Using demo data.');
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -23,6 +47,12 @@ export default function Projects() {
       />
       
       <div className="space-y-6">
+        {error && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-700">
+            {error}
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>

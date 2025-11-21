@@ -1,0 +1,19 @@
+
+> Project Management Dashboard Design@0.1.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v6.3.5[39m  [2mready in [0m[1m781[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5173[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m11:49:17 am[22m [36m[1m[vite][22m[39m [32m.env.local changed, restarting server...[39m
+[2m11:49:17 am[22m [36m[1m[vite][22m[39m server restarted.
+[2m12:09:11 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Dashboard.tsx[22m
+[2m12:09:34 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Projects.tsx[22m
+[2m12:09:39 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Projects.tsx[22m
+[2m12:10:12 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Team.tsx[22m
+[2m12:10:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Team.tsx[22m
+[2m1:34:39 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Innovation1Login.tsx[22m
+[2m1:34:45 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Innovation1Login.tsx[22m
+[2m1:35:24 pm[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/pages/Innovation1Login.tsx, /src/components/ProtectedRoute.tsx, /src/components/layout/Header.tsx, /src/pages/Tasks.tsx, /src/pages/ProjectDetail.tsx, /src/pages/Dashboard.tsx, /src/pages/Projects.tsx, /src/pages/Team.tsx[22m

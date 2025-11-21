@@ -1,9 +1,10 @@
 import { Task, TaskStatus } from '../types/task';
+import { apiClient } from './api';
 
 // Storage key
 const STORAGE_KEY = 'innovation1_tasks';
 
-// Mock task data
+// Mock task data (for fallback/offline mode)
 const initialMockTasks: Task[] = [
   {
     id: 'task-1',
@@ -186,13 +187,44 @@ class TaskService {
   }
 
   async getTasks(): Promise<Task[]> {
-    await delay(300);
-    return [...this.tasks];
+    try {
+      const response = await apiClient.getTasks();
+      return response.map(this.convertApiTaskToTask);
+    } catch (error) {
+      console.warn('Failed to fetch tasks from API, using local cache:', error);
+      return [...this.tasks];
+    }
   }
 
   async getTasksByStatus(status: TaskStatus): Promise<Task[]> {
-    await delay(200);
-    return this.tasks.filter((task) => task.status === status).sort((a, b) => a.order - b.order);
+    try {
+      const response = await apiClient.getTasks({ status });
+      return response.map(this.convertApiTaskToTask).sort((a, b) => a.order - b.order);
+    } catch (error) {
+      console.warn('Failed to fetch tasks by status from API, using local cache:', error);
+      return this.tasks.filter((task) => task.status === status).sort((a, b) => a.order - b.order);
+    }
+  }
+
+  private convertApiTaskToTask(apiTask: any): Task {
+    return {
+      id: apiTask.id,
+      title: apiTask.title,
+      description: apiTask.description,
+      status: apiTask.status.toLowerCase().replace('_', '-') as TaskStatus,
+      priority: apiTask.priority.toLowerCase() as any,
+      projectId: apiTask.project_id,
+      projectName: apiTask.project?.name || 'Unknown Project',
+      assignee: apiTask.assignee_id ? {
+        id: apiTask.assignee_id,
+        name: apiTask.assignee?.name || 'Unassigned',
+        avatar: apiTask.assignee?.avatar,
+      } : { id: 'unassigned', name: 'Unassigned', avatar: undefined },
+      dueDate: apiTask.due_date,
+      order: apiTask.order || 0,
+      createdAt: apiTask.created_at,
+      updatedAt: apiTask.updated_at,
+    };
   }
 
   async updateTaskStatus(
@@ -200,88 +232,134 @@ class TaskService {
     newStatus: TaskStatus,
     newOrder: number
   ): Promise<Task> {
-    await delay(100);
+    try {
+      const statusMap: Record<TaskStatus, string> = {
+        'backlog': 'BACKLOG',
+        'in-progress': 'IN_PROGRESS',
+        'review': 'REVIEW',
+        'done': 'DONE',
+      };
 
-    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
-    if (taskIndex === -1) {
-      throw new Error(`Task ${taskId} not found`);
-    }
+      const response = await apiClient.updateTaskStatus(
+        taskId,
+        statusMap[newStatus],
+        newOrder
+      );
+      return this.convertApiTaskToTask(response);
+    } catch (error) {
+      console.warn('Failed to update task status in API, updating locally:', error);
 
-    const oldStatus = this.tasks[taskIndex].status;
+      const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
+      if (taskIndex === -1) {
+        throw new Error(`Task ${taskId} not found`);
+      }
 
-    // Update the task
-    this.tasks[taskIndex] = {
-      ...this.tasks[taskIndex],
-      status: newStatus,
-      order: newOrder,
-      updatedAt: new Date().toISOString(),
-    };
+      const oldStatus = this.tasks[taskIndex].status;
+      this.tasks[taskIndex] = {
+        ...this.tasks[taskIndex],
+        status: newStatus,
+        order: newOrder,
+        updatedAt: new Date().toISOString(),
+      };
 
-    // Reorder tasks in the old column
-    if (oldStatus !== newStatus) {
+      if (oldStatus !== newStatus) {
+        this.tasks
+          .filter((t) => t.status === oldStatus && t.id !== taskId)
+          .forEach((t, index) => {
+            t.order = index;
+          });
+      }
+
       this.tasks
-        .filter((t) => t.status === oldStatus && t.id !== taskId)
-        .forEach((t, index) => {
-          t.order = index;
+        .filter((t) => t.status === newStatus && t.id !== taskId)
+        .forEach((t) => {
+          if (t.order >= newOrder) {
+            t.order += 1;
+          }
         });
+
+      this.saveToStorage();
+      return { ...this.tasks[taskIndex] };
     }
-
-    // Reorder tasks in the new column
-    this.tasks
-      .filter((t) => t.status === newStatus && t.id !== taskId)
-      .forEach((t) => {
-        if (t.order >= newOrder) {
-          t.order += 1;
-        }
-      });
-
-    this.saveToStorage();
-    return { ...this.tasks[taskIndex] };
   }
 
   async updateTask(taskId: string, updates: Partial<Task>): Promise<Task> {
-    await delay(100);
+    try {
+      const updateData: any = {
+        title: updates.title,
+        description: updates.description,
+        status: updates.status ? updates.status.toUpperCase().replace('-', '_') : undefined,
+        priority: updates.priority ? updates.priority.toUpperCase() : undefined,
+        due_date: updates.dueDate,
+        order: updates.order,
+      };
 
-    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
-    if (taskIndex === -1) {
-      throw new Error(`Task ${taskId} not found`);
+      Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+      const response = await apiClient.updateTask(taskId, updateData);
+      return this.convertApiTaskToTask(response);
+    } catch (error) {
+      console.warn('Failed to update task in API, updating locally:', error);
+
+      const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
+      if (taskIndex === -1) {
+        throw new Error(`Task ${taskId} not found`);
+      }
+
+      this.tasks[taskIndex] = {
+        ...this.tasks[taskIndex],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+
+      this.saveToStorage();
+      return { ...this.tasks[taskIndex] };
     }
-
-    this.tasks[taskIndex] = {
-      ...this.tasks[taskIndex],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-
-    this.saveToStorage();
-    return { ...this.tasks[taskIndex] };
   }
 
   async createTask(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Promise<Task> {
-    await delay(200);
+    try {
+      const createData = {
+        title: task.title,
+        description: task.description,
+        status: task.status.toUpperCase().replace('-', '_'),
+        priority: task.priority.toUpperCase(),
+        project_id: task.projectId,
+        assignee_id: task.assignee?.id && task.assignee.id !== 'unassigned' ? task.assignee.id : null,
+        due_date: task.dueDate,
+        order: task.order || 0,
+      };
 
-    const newTask: Task = {
-      ...task,
-      id: `task-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+      const response = await apiClient.createTask(createData);
+      return this.convertApiTaskToTask(response);
+    } catch (error) {
+      console.warn('Failed to create task in API, creating locally:', error);
 
-    this.tasks.push(newTask);
-    this.saveToStorage();
-    return { ...newTask };
+      const newTask: Task = {
+        ...task,
+        id: `task-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      this.tasks.push(newTask);
+      this.saveToStorage();
+      return { ...newTask };
+    }
   }
 
   async deleteTask(taskId: string): Promise<void> {
-    await delay(100);
-
-    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
-    if (taskIndex === -1) {
-      throw new Error(`Task ${taskId} not found`);
+    try {
+      await apiClient.deleteTask(taskId);
+    } catch (error) {
+      console.warn('Failed to delete task from API, deleting locally:', error);
     }
 
-    this.tasks.splice(taskIndex, 1);
-    this.saveToStorage();
+    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
+    if (taskIndex !== -1) {
+      this.tasks.splice(taskIndex, 1);
+      this.saveToStorage();
+    }
   }
 
   async getProjects(): Promise<Array<{ id: string; name: string; color: string }>> {

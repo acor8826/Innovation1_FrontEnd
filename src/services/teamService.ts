@@ -1,4 +1,5 @@
 import { TeamMember, TeamRole, TeamStatus } from '../types/team';
+import { apiClient } from './api';
 
 // Storage key
 const STORAGE_KEY = 'innovation1_team_members';
@@ -131,59 +132,144 @@ class TeamService {
     }
   }
 
+  private convertApiMemberToTeamMember(apiMember: any): TeamMember {
+    return {
+      id: apiMember.id,
+      name: apiMember.name || apiMember.full_name,
+      email: apiMember.email,
+      role: (apiMember.role?.toLowerCase() || 'other') as TeamRole,
+      status: (apiMember.status?.toLowerCase() || 'active') as TeamStatus,
+      avatar: apiMember.avatar,
+      department: apiMember.department,
+      phone: apiMember.phone,
+      location: apiMember.location,
+      bio: apiMember.bio,
+      joinDate: apiMember.join_date,
+      createdAt: apiMember.created_at,
+      updatedAt: apiMember.updated_at,
+    };
+  }
+
   async getMembers(): Promise<TeamMember[]> {
-    await delay(300);
+    try {
+      const response = await apiClient.getTeamMembers();
+      if (response && Array.isArray(response)) {
+        const members = response.map((member) => this.convertApiMemberToTeamMember(member));
+        this.members = members;
+        return members;
+      }
+    } catch (error) {
+      console.warn('Failed to fetch team members from API, using local cache:', error);
+    }
     return [...this.members];
   }
 
   async getMemberById(id: string): Promise<TeamMember | undefined> {
-    await delay(200);
+    try {
+      const response = await apiClient.getTeamMember(id);
+      if (response) {
+        return this.convertApiMemberToTeamMember(response);
+      }
+    } catch (error) {
+      console.warn('Failed to fetch team member from API, checking local cache:', error);
+    }
     return this.members.find((m) => m.id === id);
   }
 
   async createMember(member: Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<TeamMember> {
-    await delay(200);
+    try {
+      const createData = {
+        name: member.name,
+        email: member.email,
+        role: member.role.toUpperCase(),
+        status: member.status.toUpperCase(),
+        avatar: member.avatar,
+        department: member.department,
+        phone: member.phone,
+        location: member.location,
+        bio: member.bio,
+        join_date: member.joinDate,
+      };
 
-    const newMember: TeamMember = {
-      ...member,
-      id: `team-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+      const response = await apiClient.createTeamMember(createData);
+      const newMember = this.convertApiMemberToTeamMember(response);
+      this.members.push(newMember);
+      this.saveToStorage();
+      return newMember;
+    } catch (error) {
+      console.warn('Failed to create team member in API, creating locally:', error);
 
-    this.members.push(newMember);
-    this.saveToStorage();
-    return { ...newMember };
+      const newMember: TeamMember = {
+        ...member,
+        id: `team-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      this.members.push(newMember);
+      this.saveToStorage();
+      return { ...newMember };
+    }
   }
 
   async updateMember(id: string, updates: Partial<TeamMember>): Promise<TeamMember> {
-    await delay(200);
+    try {
+      const updateData: any = {
+        name: updates.name,
+        email: updates.email,
+        role: updates.role ? updates.role.toUpperCase() : undefined,
+        status: updates.status ? updates.status.toUpperCase() : undefined,
+        avatar: updates.avatar,
+        department: updates.department,
+        phone: updates.phone,
+        location: updates.location,
+        bio: updates.bio,
+        join_date: updates.joinDate,
+      };
 
-    const memberIndex = this.members.findIndex((m) => m.id === id);
-    if (memberIndex === -1) {
-      throw new Error(`Team member ${id} not found`);
+      Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
+
+      const response = await apiClient.updateTeamMember(id, updateData);
+      const updatedMember = this.convertApiMemberToTeamMember(response);
+
+      const memberIndex = this.members.findIndex((m) => m.id === id);
+      if (memberIndex !== -1) {
+        this.members[memberIndex] = updatedMember;
+        this.saveToStorage();
+      }
+
+      return updatedMember;
+    } catch (error) {
+      console.warn('Failed to update team member in API, updating locally:', error);
+
+      const memberIndex = this.members.findIndex((m) => m.id === id);
+      if (memberIndex === -1) {
+        throw new Error(`Team member ${id} not found`);
+      }
+
+      this.members[memberIndex] = {
+        ...this.members[memberIndex],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
+
+      this.saveToStorage();
+      return { ...this.members[memberIndex] };
     }
-
-    this.members[memberIndex] = {
-      ...this.members[memberIndex],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-
-    this.saveToStorage();
-    return { ...this.members[memberIndex] };
   }
 
   async deleteMember(id: string): Promise<void> {
-    await delay(200);
-
-    const memberIndex = this.members.findIndex((m) => m.id === id);
-    if (memberIndex === -1) {
-      throw new Error(`Team member ${id} not found`);
+    try {
+      await apiClient.deleteTeamMember(id);
+    } catch (error) {
+      console.warn('Failed to delete team member from API, deleting locally:', error);
     }
 
-    this.members.splice(memberIndex, 1);
-    this.saveToStorage();
+    const memberIndex = this.members.findIndex((m) => m.id === id);
+    if (memberIndex !== -1) {
+      this.members.splice(memberIndex, 1);
+      this.saveToStorage();
+    }
   }
 
   async searchMembers(query: string): Promise<TeamMember[]> {
