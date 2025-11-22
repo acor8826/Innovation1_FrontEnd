@@ -1,0 +1,74 @@
+<testsuites id="" name="" tests="1" failures="1" skipped="0" errors="0" time="7.875265000000001">
+<testsuite name="create-saturday.spec.ts" timestamp="2025-11-22T01:08:18.926Z" hostname="chromium" tests="1" failures="1" skipped="0" time="5.965" errors="0">
+<testcase name="Create Saturday Project › should create a project called &quot;saturday&quot; via UI and verify it appears on dashboard" classname="create-saturday.spec.ts" time="5.965">
+<failure message="create-saturday.spec.ts:11:7 should create a project called &quot;saturday&quot; via UI and verify it appears on dashboard" type="FAILURE">
+<![CDATA[  [chromium] › create-saturday.spec.ts:11:7 › Create Saturday Project › should create a project called "saturday" via UI and verify it appears on dashboard 
+
+    Error: response.text: Response body is unavailable for redirect responses
+
+      21 |         createProjectResponse = response;
+      22 |         if (!response.ok()) {
+    > 23 |           response.text().then(text => {
+         |                    ^
+      24 |             console.log(`❌ API Error Response: ${text}`);
+      25 |             createProjectError = text;
+      26 |           });
+        at Page.<anonymous> (C:\Users\acor8\OneDrive\Desktop\Innovation1\Projectmanagementdashboarddesign\tests\create-saturday.spec.ts:23:20)
+
+    Error: response.text: Response body is unavailable for redirect responses
+
+      109 |         console.log(`✓ Project created: ${responseData.name || responseData.id}`);
+      110 |       } else {
+    > 111 |         const errorData = await apiResponse.text();
+          |                                             ^
+      112 |         console.log(`❌ API Error: ${errorData}`);
+      113 |         throw new Error(`API returned ${apiResponse.status()}: ${errorData}`);
+      114 |       }
+        at C:\Users\acor8\OneDrive\Desktop\Innovation1\Projectmanagementdashboarddesign\tests\create-saturday.spec.ts:111:45
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\create-saturday-Create-Sat-d8385-ify-it-appears-on-dashboard-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\create-saturday-Create-Sat-d8385-ify-it-appears-on-dashboard-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+🧪 Starting: Create "Saturday" Project Test
+
+📍 Step 1: Navigate to login page
+✓ Login page loaded
+
+📍 Step 2: Login with test credentials
+✓ Logged in successfully
+🔐 Auth token: eyJhbGciOiJIUzI1NiIs...
+
+📍 Step 3: Navigate to projects page
+✓ Projects page loaded
+
+📍 Step 4: Click "Add Project" button
+✓ Clicked "Add Project" button
+
+📍 Step 5: Wait for create project modal
+✓ Modal appeared
+
+📍 Step 6: Fill in project details
+✓ Entered project name: "saturday"
+✓ Entered description
+
+📍 Step 7: Click "Create Project" button
+✓ Clicked "Create Project" button
+🌐 API Response: POST /api/projects → 307
+
+✓ API Response received: 307
+❌ Failed to get API response: Error: response.text: Response body is unavailable for redirect responses
+
+[[ATTACHMENT|test-results\create-saturday-Create-Sat-d8385-ify-it-appears-on-dashboard-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\create-saturday-Create-Sat-d8385-ify-it-appears-on-dashboard-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

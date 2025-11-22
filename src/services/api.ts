@@ -3,7 +3,7 @@
 
 const isProduction = window.location.hostname !== 'localhost';
 const BACKEND_BASE_URL = isProduction
-  ? 'https://innovation1-api-513885582887.us-central1.run.app/api'
+  ? 'https://innovation1-api-710611968322.us-central1.run.app/api'
   : 'http://localhost:8000/api';
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);

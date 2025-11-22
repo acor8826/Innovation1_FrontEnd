@@ -19,15 +19,19 @@ export default function Projects() {
 
   const fetchProjects = async () => {
     try {
+      console.log('📥 Fetching projects...');
       setLoading(true);
       setError(null);
       const response = await apiClient.getProjects();
+      console.log('📥 Received response:', response);
       if (response && Array.isArray(response)) {
+        console.log(`📥 Setting ${response.length} projects`);
         setProjects(response);
       }
       setLoading(false);
+      console.log('✓ Projects fetch complete');
     } catch (err) {
-      console.error('Error fetching projects:', err);
+      console.error('❌ Error fetching projects:', err);
       setError('Failed to load projects. Using demo data.');
       setLoading(false);
     }

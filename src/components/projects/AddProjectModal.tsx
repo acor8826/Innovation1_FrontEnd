@@ -46,19 +46,31 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
 
     setIsLoading(true);
     try {
-      await apiClient.createProject({
+      console.log('📤 Creating project:', formData);
+      const result = await apiClient.createProject({
         name: formData.name,
         description: formData.description,
         status: formData.status,
         deadline: formData.deadline || null,
       });
 
+      console.log('✅ Project created successfully:', result);
       toast.success('Project created successfully');
+
+      // Close modal first
       onOpenChange(false);
+
+      // Reset form
       setFormData({ name: '', description: '', status: 'ACTIVE', deadline: '' });
-      onProjectCreated?.();
+
+      // Wait a moment for modal to close, then refresh projects
+      setTimeout(() => {
+        console.log('🔄 Calling onProjectCreated callback...');
+        onProjectCreated?.();
+        console.log('✓ Callback executed');
+      }, 500);
     } catch (error: any) {
-      console.error('Error creating project:', error);
+      console.error('❌ Error creating project:', error);
       toast.error(error.message || 'Failed to create project');
     } finally {
       setIsLoading(false);
