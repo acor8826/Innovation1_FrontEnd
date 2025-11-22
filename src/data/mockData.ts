@@ -42,15 +42,22 @@ export const tasks: Task[] = [];
 export const teamMembers: TeamMember[] = [];
 export const activities: Activity[] = [];
 
-// Empty KPI data
+// Empty KPI data - fallback with proper structure
 export const kpiData = {
-  totalProjects: 0,
-  activeProjects: 0,
-  completedTasks: 0,
-  teamMembers: 0,
-  projectMetrics: {
-    active: 0,
-    pending: 0,
-    completed: 0,
+  activeProjects: {
+    value: 0,
+    trend: '0% this week'
   },
+  tasksDueToday: {
+    value: 0,
+    trend: '0% this week'
+  },
+  overdueTasks: {
+    value: 0,
+    trend: '0% this week'
+  },
+  teamMembers: {
+    value: 0,
+    trend: '0% this week'
+  }
 };

@@ -53,14 +53,26 @@ export default function Dashboard() {
 
         // Fetch projects from backend
         const projectsResponse = await apiClient.getProjects();
-        if (projectsResponse && Array.isArray(projectsResponse)) {
-          setProjects(projectsResponse);
+        if (projectsResponse) {
+          // Handle both array and wrapped response formats
+          const projectsArray = Array.isArray(projectsResponse)
+            ? projectsResponse
+            : (projectsResponse.projects || []);
+          if (Array.isArray(projectsArray)) {
+            setProjects(projectsArray);
+          }
         }
 
         // Fetch activities from backend
         const activitiesResponse = await apiClient.getDashboardActivities();
-        if (activitiesResponse && Array.isArray(activitiesResponse)) {
-          setActivities(activitiesResponse);
+        if (activitiesResponse) {
+          // Handle both array and wrapped response formats
+          const activitiesArray = Array.isArray(activitiesResponse)
+            ? activitiesResponse
+            : (activitiesResponse.activities || []);
+          if (Array.isArray(activitiesArray)) {
+            setActivities(activitiesArray);
+          }
         }
 
         setLoading(false);
