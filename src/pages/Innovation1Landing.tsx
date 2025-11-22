@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -23,9 +23,9 @@ import { NeuralGrid } from '../components/innovation1/NeuralGrid';
 import { GlassCard } from '../components/innovation1/GlassCard';
 import { TimelineStep } from '../components/innovation1/TimelineStep';
 import { ShowcaseProject } from '../components/innovation1/ShowcaseProject';
-import { QuantumAtom } from '../components/innovation1/QuantumAtom';
+import { QuantumAtomLazy } from '../components/innovation1/QuantumAtomLazy';
 
-export default function Innovation1Landing() {
+function Innovation1Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -276,7 +276,7 @@ export default function Innovation1Landing() {
               transition={{ duration: 1, delay: 0.3 }}
               className="relative h-[400px] sm:h-[500px] lg:h-[600px]"
             >
-              <QuantumAtom />
+              <QuantumAtomLazy />
             </motion.div>
           </div>
 
@@ -537,3 +537,5 @@ export default function Innovation1Landing() {
     </div>
   );
 }
+
+export default memo(Innovation1Landing);

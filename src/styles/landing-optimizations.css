@@ -1,0 +1,173 @@
+/* Landing Page Performance Optimizations */
+
+/* Use will-change sparingly for animated elements */
+.landing-hero {
+  will-change: auto;
+}
+
+/* Optimize animations with GPU acceleration */
+.animate-in {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Reduce animation duration for snappier feel */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Smooth pulse without jank */
+@keyframes smoothPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.pulse-smooth {
+  animation: smoothPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Optimized text animations */
+.text-fade-in {
+  animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Navigation smooth transition */
+nav {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Button hover with GPU acceleration */
+.button-hover {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease;
+  will-change: transform;
+}
+
+.button-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* Section fade-in timing stagger */
+.section-fade-in {
+  animation: fadeInUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.section-fade-in:nth-child(1) { animation-delay: 0s; }
+.section-fade-in:nth-child(2) { animation-delay: 0.1s; }
+.section-fade-in:nth-child(3) { animation-delay: 0.2s; }
+.section-fade-in:nth-child(4) { animation-delay: 0.3s; }
+
+/* Prevent layout shift with aspect ratio */
+.hero-content {
+  contain: layout style paint;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Optimize gradient rendering */
+.gradient-text {
+  background-attachment: fixed;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card entrance animations */
+.card-entrance {
+  animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Prevent forced reflows */
+.no-reflow {
+  contain: size layout style paint;
+}
+
+/* Smooth color transitions */
+.color-transition {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Optimize text rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Performance: Use transforms instead of position changes */
+.transform-animate {
+  will-change: transform;
+}
+
+.transform-animate:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Optimize backdrop blur */
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Prevent cumulative layout shift */
+.layout-lock {
+  contain: layout;
+}
