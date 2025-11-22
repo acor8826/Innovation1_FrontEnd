@@ -4,7 +4,7 @@
 const isProduction = window.location.hostname !== 'localhost';
 const BACKEND_BASE_URL = isProduction
   ? 'https://innovation1-api-513885582887.us-central1.run.app/api'
-  : 'http://localhost:8001/api';
+  : 'http://localhost:8000/api';
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);
 
@@ -152,7 +152,7 @@ export const apiClient = {
 
   async createProject(project: any) {
     const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/projects`, {
+    const response = await fetch(`${this.baseUrl}/projects/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ export const apiClient = {
 
   async createTask(task: any) {
     const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/tasks`, {
+    const response = await fetch(`${this.baseUrl}/tasks/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ export const apiClient = {
 
   async createTeamMember(member: any) {
     const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/team`, {
+    const response = await fetch(`${this.baseUrl}/team/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
