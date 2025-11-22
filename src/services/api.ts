@@ -2,8 +2,8 @@
 // Points to Cloud Run backend
 
 const isProduction = window.location.hostname !== 'localhost';
-const BACKEND_BASE_URL = isProduction 
-  ? 'https://innovation1-api-687835063861.us-central1.run.app/api'
+const BACKEND_BASE_URL = isProduction
+  ? 'https://innovation1-api-513885582887.us-central1.run.app/api'
   : 'http://localhost:8001/api';
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);

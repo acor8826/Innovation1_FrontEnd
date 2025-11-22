@@ -4,6 +4,22 @@ import { apiClient } from '../services/api';
 const AUTH_TOKEN_KEY = 'innovation1_auth_token';
 const USER_KEY = 'innovation1_user';
 
+// Clear invalid tokens on startup
+try {
+  const token = localStorage.getItem(AUTH_TOKEN_KEY);
+  if (token) {
+    // Check if token is likely expired or invalid by looking at its format
+    // If it's malformed or seems old, clear it
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    }
+  }
+} catch (e) {
+  // Ignore errors during startup
+}
+
 export interface User {
   id?: string;
   email: string;

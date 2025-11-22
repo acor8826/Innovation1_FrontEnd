@@ -1,0 +1,11 @@
+Building using Dockerfile and deploying container to Cloud Run service [innovation1-frontend] in project [bova-470808] region [us-central1]
+Building and deploying new service...
+Validating Service..................done
+Uploading sources...................................................done
+Building Container.........................................................................................................................................................................................................................................................................................................................................................................................................................................................................done
+Setting IAM Policy...................................done
+Creating Revision.......................................................................................done
+Routing traffic.....done
+Done.
+Service [innovation1-frontend] revision [innovation1-frontend-00001-xcw] has been deployed and is serving 100 percent of traffic.
+Service URL: https://innovation1-frontend-513885582887.us-central1.run.app
