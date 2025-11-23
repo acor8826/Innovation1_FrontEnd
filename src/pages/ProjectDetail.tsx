@@ -19,6 +19,8 @@ import { AddTaskModal } from '../components/kanban/AddTaskModal';
 import { taskService } from '../services/taskService';
 import { Task } from '../types/task';
 import { toast } from 'sonner';
+import { RnDProjectExpansionView } from '../components/rnd/RnDProjectExpansion';
+import { RnDTaskExpansionView } from '../components/rnd/RnDTaskExpansion';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -57,7 +59,7 @@ export default function ProjectDetail() {
         projectId: id,
         projectName: project?.name || '',
       };
-      
+
       await taskService.createTask(taskWithProject);
       await loadProjectTasks();
       toast.success('Task created successfully');
@@ -177,16 +179,15 @@ export default function ProjectDetail() {
                       className="flex items-start gap-3 p-4 rounded-lg hover:bg-gray-50 transition-colors border border-gray-100"
                     >
                       <div className="pt-0.5">
-                        <Checkbox 
-                          checked={task.status === 'done'} 
-                          onCheckedChange={() => handleToggleTask(task)} 
+                        <Checkbox
+                          checked={task.status === 'done'}
+                          onCheckedChange={() => handleToggleTask(task)}
                         />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p
-                          className={`text-gray-900 ${
-                            task.status === 'done' ? 'line-through text-gray-500' : ''
-                          }`}
+                          className={`text-gray-900 ${task.status === 'done' ? 'line-through text-gray-500' : ''
+                            }`}
                         >
                           {task.title}
                         </p>
@@ -196,24 +197,25 @@ export default function ProjectDetail() {
                         <div className="flex items-center gap-3 mt-2">
                           {task.dueDate && (
                             <p className="text-gray-500 text-xs">
-                              Due: {new Date(task.dueDate).toLocaleDateString('en-US', { 
-                                month: 'short', 
+                              Due: {new Date(task.dueDate).toLocaleDateString('en-US', {
+                                month: 'short',
                                 day: 'numeric',
-                                year: 'numeric' 
+                                year: 'numeric'
                               })}
                             </p>
                           )}
                           {task.priority && (
-                            <span className={`text-xs px-2 py-0.5 rounded-full ${
-                              task.priority === 'urgent' ? 'bg-red-50 text-red-600' :
-                              task.priority === 'high' ? 'bg-orange-50 text-orange-600' :
-                              task.priority === 'medium' ? 'bg-yellow-50 text-yellow-600' :
-                              'bg-blue-50 text-blue-600'
-                            }`}>
+                            <span className={`text-xs px-2 py-0.5 rounded-full ${task.priority === 'urgent' ? 'bg-red-50 text-red-600' :
+                                task.priority === 'high' ? 'bg-orange-50 text-orange-600' :
+                                  task.priority === 'medium' ? 'bg-yellow-50 text-yellow-600' :
+                                    'bg-blue-50 text-blue-600'
+                              }`}>
                               {task.priority}
                             </span>
                           )}
                         </div>
+                        {/* R&D Task Expansion */}
+                        <RnDTaskExpansionView taskId={task.id} />
                       </div>
                     </div>
                   ))
@@ -303,6 +305,9 @@ export default function ProjectDetail() {
             </div>
           </div>
         </div>
+
+        {/* R&D Expansion Section */}
+        {id && <RnDProjectExpansionView projectId={id} />}
       </div>
       <AddTaskModal
         isOpen={isAddModalOpen}

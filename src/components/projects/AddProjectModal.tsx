@@ -12,6 +12,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
+import { Checkbox } from '../ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -33,6 +34,11 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
     description: '',
     status: 'ACTIVE',
     deadline: '',
+    is_rnd: false,
+    start_date: '',
+    technical_uncertainty: '',
+    new_knowledge_intended: '',
+    hypothesis: '',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,6 +58,11 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
         description: formData.description,
         status: formData.status,
         deadline: formData.deadline || null,
+        is_rnd: formData.is_rnd,
+        start_date: formData.start_date || null,
+        technical_uncertainty: formData.technical_uncertainty,
+        new_knowledge_intended: formData.new_knowledge_intended,
+        hypothesis: formData.hypothesis,
       });
 
       console.log('✅ Project created successfully:', result);
@@ -61,7 +72,17 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
       onOpenChange(false);
 
       // Reset form
-      setFormData({ name: '', description: '', status: 'ACTIVE', deadline: '' });
+      setFormData({
+        name: '',
+        description: '',
+        status: 'ACTIVE',
+        deadline: '',
+        is_rnd: false,
+        start_date: '',
+        technical_uncertainty: '',
+        new_knowledge_intended: '',
+        hypothesis: '',
+      });
 
       // Wait a moment for modal to close, then refresh projects
       setTimeout(() => {
@@ -112,7 +133,7 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
               <Label htmlFor="status">Status</Label>
               <Select
                 value={formData.status}
-                onValueChange={(value) => setFormData({ ...formData, status: value })}
+                onValueChange={(value: string) => setFormData({ ...formData, status: value })}
               >
                 <SelectTrigger id="status">
                   <SelectValue />
@@ -133,6 +154,67 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
                 onChange={(e) => setFormData({ ...formData, deadline: e.target.value })}
               />
             </div>
+
+            <div className="flex items-center space-x-2 py-2">
+              <Checkbox
+                id="is_rnd"
+                checked={formData.is_rnd}
+                onCheckedChange={(checked: boolean | string) =>
+                  setFormData({ ...formData, is_rnd: checked === true })
+                }
+              />
+              <Label htmlFor="is_rnd">Is this an R&D Project?</Label>
+            </div>
+
+            {formData.is_rnd && (
+              <div className="space-y-4 border-l-2 border-blue-500 pl-4 mt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="start_date">R&D Start Date <span className="text-red-500">*</span></Label>
+                  <Input
+                    id="start_date"
+                    type="date"
+                    value={formData.start_date}
+                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                    required={formData.is_rnd}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="technical_uncertainty">Technical Uncertainty (The "Why") <span className="text-red-500">*</span></Label>
+                  <Textarea
+                    id="technical_uncertainty"
+                    placeholder="Describe the technical gap or uncertainty that prevents you from knowing the outcome."
+                    value={formData.technical_uncertainty}
+                    onChange={(e) => setFormData({ ...formData, technical_uncertainty: e.target.value })}
+                    rows={3}
+                    required={formData.is_rnd}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new_knowledge_intended">New Knowledge Intended (The "What") <span className="text-red-500">*</span></Label>
+                  <Textarea
+                    id="new_knowledge_intended"
+                    placeholder="What new knowledge is being sought through this project?"
+                    value={formData.new_knowledge_intended}
+                    onChange={(e) => setFormData({ ...formData, new_knowledge_intended: e.target.value })}
+                    rows={3}
+                    required={formData.is_rnd}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="hypothesis">Hypothesis (Optional)</Label>
+                  <Textarea
+                    id="hypothesis"
+                    placeholder="What is the hypothesis being tested?"
+                    value={formData.hypothesis}
+                    onChange={(e) => setFormData({ ...formData, hypothesis: e.target.value })}
+                    rows={2}
+                  />
+                </div>
+              </div>
+            )}
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>

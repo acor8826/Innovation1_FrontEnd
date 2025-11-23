@@ -39,17 +39,10 @@ export default function Innovation1Login() {
     }
 
     try {
-      // Call API login
-      const response = await apiClient.login(formData.email, formData.password);
+      // Use the auth utility which handles everything properly
+      const success = await auth.login(formData.email, formData.password);
 
-      if (response && response.access_token) {
-        // Store token and user info
-        localStorage.setItem('innovation1_auth_token', response.access_token);
-        localStorage.setItem('innovation1_user', JSON.stringify(response.user));
-
-        // Also set in auth utility
-        auth.login(formData.email, formData.password);
-
+      if (success) {
         // Redirect to dashboard
         navigate('/dashboard', { replace: true });
       } else {
@@ -77,10 +70,10 @@ export default function Innovation1Login() {
         {/* Nebula clouds */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#2D9CDB] rounded-full blur-[150px] opacity-20 animate-pulse" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#C084F5] rounded-full blur-[140px] opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
-        
+
         {/* Neural grid */}
         <NeuralGrid />
-        
+
         {/* Particles */}
         <ParticleField />
       </div>

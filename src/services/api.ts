@@ -4,7 +4,7 @@
 const isProduction = window.location.hostname !== 'localhost';
 const BACKEND_BASE_URL = isProduction
   ? 'https://innovation1-api-710611968322.us-central1.run.app/api'
-  : 'http://localhost:8000/api';
+  : 'http://localhost:8001/api';
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);
 
@@ -31,254 +31,154 @@ export const apiClient = {
     return response.json();
   },
 
+  // This is a new private helper method for making authenticated API requests
+  async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const token = await this.getToken();
+
+    // Debug log for auth token
+    if (endpoint.includes('/dashboard') || endpoint.includes('/projects')) {
+      console.log(`[API Debug] Requesting ${endpoint}`);
+      console.log(`[API Debug] Token present: ${!!token}`);
+      if (token) {
+        console.log(`[API Debug] Token prefix: ${token.substring(0, 10)}...`);
+      }
+    }
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(options.headers as Record<string, string>),
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        headers,
+      });
+
+      if (response.status === 401) {
+        console.error(`[API Debug] 401 Unauthorized for ${endpoint}`);
+        localStorage.removeItem('innovation1_auth_token');
+        localStorage.removeItem('innovation1_user');
+
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+        throw new Error('Unauthorized');
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('API Request failed:', error);
+      throw error;
+    }
+  },
+
   async getToken() {
     return localStorage.getItem('innovation1_auth_token');
   },
 
   async getCurrentUser() {
-    const token = await this.getToken();
-    if (!token) throw new Error('No authentication token found');
-
-    const response = await fetch(`${this.baseUrl}/auth/me`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Failed to fetch current user');
-    }
-
-    return response.json();
+    return this.request<any>('/auth/me');
   },
 
   async logout() {
-    const token = await this.getToken();
-
     try {
-      const response = await fetch(`${this.baseUrl}/auth/logout`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { 'Authorization': `Bearer ${token}` }),
-        },
-      });
-
-      if (!response.ok) {
-        console.warn('Logout API call failed, clearing local session anyway');
-      }
+      await this.request('/auth/logout', { method: 'POST' });
     } catch (error) {
-      console.warn('Logout error:', error);
+      console.warn('Logout API call failed', error);
     }
-
-    // Always clear local storage
     localStorage.removeItem('innovation1_auth_token');
     localStorage.removeItem('innovation1_user');
     return { success: true };
   },
 
   async getDashboardKPIs() {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/dashboard/kpis`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch KPIs');
-    return response.json();
+    return this.request<any>('/dashboard/kpis');
   },
 
   async getProjects() {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/projects`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch projects');
-    return response.json();
+    return this.request<any[]>('/projects');
   },
 
   async getTasks() {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/tasks`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch tasks');
-    return response.json();
+    return this.request<any[]>('/tasks');
   },
 
   async getTeamMembers() {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/team`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch team members');
-    return response.json();
+    return this.request<any[]>('/team');
   },
 
   async getDashboardActivities() {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/dashboard/activities`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch activities');
-    return response.json();
+    return this.request<any[]>('/dashboard/activities');
   },
 
   async createProject(project: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/projects/`, {
+    return this.request<any>('/projects/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(project),
     });
-
-    if (!response.ok) throw new Error('Failed to create project');
-    return response.json();
   },
 
   async updateProject(projectId: string, project: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
+    return this.request<any>(`/projects/${projectId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(project),
     });
-
-    if (!response.ok) throw new Error('Failed to update project');
-    return response.json();
   },
 
   async deleteProject(projectId: string) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/projects/${projectId}`, {
+    return this.request<any>(`/projects/${projectId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
     });
-
-    if (!response.ok) throw new Error('Failed to delete project');
-    return response.json();
   },
 
   async createTask(task: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/tasks/`, {
+    return this.request<any>('/tasks/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(task),
     });
-
-    if (!response.ok) throw new Error('Failed to create task');
-    return response.json();
   },
 
   async updateTask(taskId: string, task: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/tasks/${taskId}`, {
+    return this.request<any>(`/tasks/${taskId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(task),
     });
-
-    if (!response.ok) throw new Error('Failed to update task');
-    return response.json();
   },
 
   async deleteTask(taskId: string) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/tasks/${taskId}`, {
+    return this.request<any>(`/tasks/${taskId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
     });
-
-    if (!response.ok) throw new Error('Failed to delete task');
-    return response.json();
   },
 
   async createTeamMember(member: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/team/`, {
+    return this.request<any>('/team/', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(member),
     });
-
-    if (!response.ok) throw new Error('Failed to create team member');
-    return response.json();
   },
 
   async updateTeamMember(memberId: string, member: any) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/team/${memberId}`, {
+    return this.request<any>(`/team/${memberId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
       body: JSON.stringify(member),
     });
-
-    if (!response.ok) throw new Error('Failed to update team member');
-    return response.json();
   },
 
   async deleteTeamMember(memberId: string) {
-    const token = await this.getToken();
-    const response = await fetch(`${this.baseUrl}/team/${memberId}`, {
+    return this.request<any>(`/team/${memberId}`, {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
-      },
     });
-
-    if (!response.ok) throw new Error('Failed to delete team member');
-    return response.json();
   },
 };
