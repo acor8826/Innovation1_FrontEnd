@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo create:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git push:*)",
+      "Bash(winget:*)",
+      "Bash(choco:*)",
+      "Bash(gh:*)",
+      "Bash(git fetch:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
