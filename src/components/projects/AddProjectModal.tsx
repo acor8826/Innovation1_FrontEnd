@@ -59,10 +59,10 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
         status: formData.status,
         deadline: formData.deadline || null,
         is_rnd: formData.is_rnd,
-        start_date: formData.start_date || null,
-        technical_uncertainty: formData.technical_uncertainty,
-        new_knowledge_intended: formData.new_knowledge_intended,
-        hypothesis: formData.hypothesis,
+        start_date: formData.is_rnd ? (formData.start_date || null) : null,
+        technical_uncertainty: formData.is_rnd ? (formData.technical_uncertainty || null) : null,
+        new_knowledge_intended: formData.is_rnd ? (formData.new_knowledge_intended || null) : null,
+        hypothesis: formData.is_rnd ? (formData.hypothesis || null) : null,
       });
 
       console.log('✅ Project created successfully:', result);
@@ -180,34 +180,32 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="technical_uncertainty">Technical Uncertainty (The "Why") <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="technical_uncertainty">Technical Uncertainty (The "Why")</Label>
                   <Textarea
                     id="technical_uncertainty"
-                    placeholder="Describe the technical gap or uncertainty that prevents you from knowing the outcome."
+                    placeholder="Will be populated by AI after submission"
                     value={formData.technical_uncertainty}
                     onChange={(e) => setFormData({ ...formData, technical_uncertainty: e.target.value })}
                     rows={3}
-                    required={formData.is_rnd}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="new_knowledge_intended">New Knowledge Intended (The "What") <span className="text-red-500">*</span></Label>
+                  <Label htmlFor="new_knowledge_intended">New Knowledge Intended (The "What")</Label>
                   <Textarea
                     id="new_knowledge_intended"
-                    placeholder="What new knowledge is being sought through this project?"
+                    placeholder="Will be populated by AI after submission"
                     value={formData.new_knowledge_intended}
                     onChange={(e) => setFormData({ ...formData, new_knowledge_intended: e.target.value })}
                     rows={3}
-                    required={formData.is_rnd}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="hypothesis">Hypothesis (Optional)</Label>
+                  <Label htmlFor="hypothesis">Hypothesis</Label>
                   <Textarea
                     id="hypothesis"
-                    placeholder="What is the hypothesis being tested?"
+                    placeholder="Will be populated by AI after submission"
                     value={formData.hypothesis}
                     onChange={(e) => setFormData({ ...formData, hypothesis: e.target.value })}
                     rows={2}
