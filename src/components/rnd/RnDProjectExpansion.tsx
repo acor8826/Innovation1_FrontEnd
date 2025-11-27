@@ -1,220 +1,268 @@
-import React, { useState, useEffect } from 'react';
-import { RnDProjectExpansion, ProjectModel, ExperimentLog } from '../../types/rnd';
-import { rndService } from '../../services/rndService';
+import { useState, useEffect } from 'react';
+import {
+    ChevronDown,
+    ChevronUp,
+    FlaskConical,
+    Target,
+    AlertTriangle,
+    Lightbulb,
+    FileText,
+    Sparkles,
+    Loader2,
+    CheckCircle,
+} from 'lucide-react';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { apiClient } from '../../services/api';
+import { aiService } from '../../services/ai';
+import { toast } from 'sonner';
 
 interface RnDProjectExpansionProps {
     projectId: string;
 }
 
-export const RnDProjectExpansionView: React.FC<RnDProjectExpansionProps> = ({ projectId }) => {
-    const [expansion, setExpansion] = useState<RnDProjectExpansion | null>(null);
-    const [models, setModels] = useState<ProjectModel[]>([]);
-    const [experiments, setExperiments] = useState<ExperimentLog[]>([]);
+export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps) {
+    const [isExpanded, setIsExpanded] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'details' | 'models' | 'experiments'>('details');
+    const [projectData, setProjectData] = useState<any>(null);
+    const [concept, setConcept] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
 
     useEffect(() => {
-        loadData();
-    }, [projectId]);
+        if (isExpanded) {
+            loadProjectData();
+        }
+    }, [isExpanded, projectId]);
 
-    const loadData = async () => {
-        setLoading(true);
+    const loadProjectData = async () => {
         try {
-            const [expData, modelsData, experimentsData] = await Promise.all([
-                rndService.getProjectExpansion(projectId),
-                rndService.getProjectModels(projectId),
-                rndService.getExperiments(projectId)
-            ]);
-            setExpansion(expData);
-            setModels(modelsData);
-            setExperiments(experimentsData);
-        } catch (err) {
-            setError('Failed to load R&D data');
-            console.error(err);
+            setLoading(true);
+            const data = await apiClient.getProject(projectId);
+            setProjectData(data);
+        } catch (error) {
+            console.error('Failed to load project data:', error);
+            toast.error('Failed to load project details');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSaveDetails = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!expansion) return;
+    const handleGeneratePlan = async () => {
+        if (!concept.trim()) {
+            toast.error('Please describe your project concept first.');
+            return;
+        }
 
         try {
-            const updated = await rndService.updateProjectExpansion(projectId, expansion);
-            setExpansion(updated);
-            alert('R&D Details saved successfully');
-        } catch (err) {
-            alert('Failed to save details');
+            setIsGenerating(true);
+            const response = await aiService.generatePlan(projectId, concept);
+
+            toast.success(`Plan generated! ${response.tasks.length} tasks added.`);
+
+            // Reload data to show new fields
+            await loadProjectData();
+            setConcept(''); // Clear input
+        } catch (error) {
+            console.error('AI Generation failed:', error);
+            toast.error('Failed to generate plan. Please try again.');
+        } finally {
+            setIsGenerating(false);
         }
     };
 
-    const handleInputChange = (field: keyof RnDProjectExpansion, value: string) => {
-        if (!expansion) {
-            setExpansion({ project_id: projectId } as RnDProjectExpansion);
-        }
-        setExpansion(prev => prev ? ({ ...prev, [field]: value }) : { project_id: projectId, [field]: value } as RnDProjectExpansion);
-    };
-
-    if (loading) return <div>Loading R&D Data...</div>;
-    if (error) return <div className="text-red-500">{error}</div>;
+    if (!isExpanded) {
+        return (
+            <Button
+                variant="outline"
+                className="w-full mt-4 flex items-center justify-between"
+                onClick={() => setIsExpanded(true)}
+            >
+                <span className="flex items-center gap-2">
+                    <FlaskConical className="w-4 h-4 text-purple-600" />
+                    R&D Project Details
+                </span>
+                <ChevronDown className="w-4 h-4" />
+            </Button>
+        );
+    }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow mt-6">
-            <h2 className="text-2xl font-bold mb-4">R&D Project Expansion</h2>
-
-            <div className="flex border-b mb-4">
-                <button
-                    className={`py-2 px-4 ${activeTab === 'details' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
-                    onClick={() => setActiveTab('details')}
-                >
-                    R&D Details
-                </button>
-                <button
-                    className={`py-2 px-4 ${activeTab === 'models' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
-                    onClick={() => setActiveTab('models')}
-                >
-                    Models ({models.length})
-                </button>
-                <button
-                    className={`py-2 px-4 ${activeTab === 'experiments' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
-                    onClick={() => setActiveTab('experiments')}
-                >
-                    Experiments ({experiments.length})
-                </button>
+        <div className="mt-6 space-y-6 border-t pt-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                    <FlaskConical className="w-6 h-6 text-purple-600" />
+                    R&D Project Expansion
+                </h2>
+                <Button variant="ghost" size="sm" onClick={() => setIsExpanded(false)}>
+                    <ChevronUp className="w-4 h-4 mr-2" />
+                    Collapse
+                </Button>
             </div>
 
-            {activeTab === 'details' && (
-                <form onSubmit={handleSaveDetails} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Problem Definition</label>
-                        <textarea
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                            rows={3}
-                            value={expansion?.problem_definition || ''}
-                            onChange={(e) => handleInputChange('problem_definition', e.target.value)}
-                        />
-                    </div>
+            {/* AI Agent Section */}
+            <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-purple-900">
+                        <Sparkles className="w-5 h-5 text-purple-600" />
+                        AI R&D Agent
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <p className="text-sm text-purple-800">
+                        Describe your project concept below. Our AI agent will analyze it against R&D tax criteria,
+                        generate compliance documentation, create a project plan, and populate your task board.
+                    </p>
+                    <Textarea
+                        placeholder="e.g., We are building a new machine learning model to optimize solar panel efficiency by analyzing real-time weather data..."
+                        value={concept}
+                        onChange={(e) => setConcept(e.target.value)}
+                        className="min-h-[100px] bg-white"
+                    />
+                    <Button
+                        onClick={handleGeneratePlan}
+                        disabled={isGenerating || !concept.trim()}
+                        className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                    >
+                        {isGenerating ? (
+                            <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Generating Plan & Tasks...
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                Generate R&D Plan & Tasks
+                            </>
+                        )}
+                    </Button>
+                </CardContent>
+            </Card>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Technical Uncertainty</label>
-                            <textarea
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                                rows={3}
-                                value={expansion?.technical_uncertainty || ''}
-                                onChange={(e) => handleInputChange('technical_uncertainty', e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Background Research</label>
-                            <textarea
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                                rows={3}
-                                value={expansion?.background_research || ''}
-                                onChange={(e) => handleInputChange('background_research', e.target.value)}
-                            />
-                        </div>
-                    </div>
+            {loading ? (
+                <div className="flex justify-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+                </div>
+            ) : projectData ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Core R&D Fields */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <Target className="w-4 h-4 text-blue-500" />
+                                Problem Definition
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                                {projectData.core_activity_description || 'Not defined yet.'}
+                            </p>
+                        </CardContent>
+                    </Card>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Hypothesis</label>
-                        <textarea
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                            rows={2}
-                            value={expansion?.hypothesis || ''}
-                            onChange={(e) => handleInputChange('hypothesis', e.target.value)}
-                        />
-                    </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                                Technical Uncertainty
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                                {projectData.technical_uncertainty || 'Not defined yet.'}
+                            </p>
+                        </CardContent>
+                    </Card>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Experimental Design</label>
-                        <textarea
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                            rows={3}
-                            value={expansion?.experimental_design || ''}
-                            onChange={(e) => handleInputChange('experimental_design', e.target.value)}
-                        />
-                    </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <Lightbulb className="w-4 h-4 text-yellow-500" />
+                                Hypothesis
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                                {projectData.hypothesis || 'Not defined yet.'}
+                            </p>
+                        </CardContent>
+                    </Card>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Success Metrics</label>
-                            <textarea
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                                rows={2}
-                                value={expansion?.success_metrics || ''}
-                                onChange={(e) => handleInputChange('success_metrics', e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Risk Assessment</label>
-                            <textarea
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"
-                                rows={2}
-                                value={expansion?.risk_assessment || ''}
-                                onChange={(e) => handleInputChange('risk_assessment', e.target.value)}
-                            />
-                        </div>
-                    </div>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-green-500" />
+                                Experiment Plan
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                                {projectData.experiment_plan || 'Not defined yet.'}
+                            </p>
+                        </CardContent>
+                    </Card>
 
-                    <div className="flex justify-end">
-                        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Save R&D Details
-                        </button>
-                    </div>
-                </form>
-            )}
+                    {/* New Knowledge */}
+                    <Card className="md:col-span-2">
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2">
+                                <FlaskConical className="w-4 h-4 text-purple-500" />
+                                New Knowledge Intended
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                                {projectData.new_knowledge_intended || 'Not defined yet.'}
+                            </p>
+                        </CardContent>
+                    </Card>
 
-            {activeTab === 'models' && (
-                <div>
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-medium">Project Models</h3>
-                        <button className="bg-green-600 text-white px-3 py-1 rounded text-sm" onClick={() => alert('Add Model feature coming soon')}>
-                            + Add Model
-                        </button>
-                    </div>
-                    {models.length === 0 ? (
-                        <p className="text-gray-500 italic">No models defined yet.</p>
-                    ) : (
-                        <ul className="divide-y">
-                            {models.map(model => (
-                                <li key={model.id} className="py-3">
-                                    <h4 className="font-bold">{model.name}</h4>
-                                    <p className="text-sm text-gray-600">{model.description}</p>
-                                </li>
-                            ))}
-                        </ul>
+                    {/* AI Generated Plan Details (if available) */}
+                    {projectData.project_plan && (
+                        <Card className="md:col-span-2 bg-slate-50 border-slate-200">
+                            <CardHeader>
+                                <CardTitle className="text-base flex items-center gap-2 text-slate-800">
+                                    <CheckCircle className="w-4 h-4 text-slate-600" />
+                                    AI Generated Project Strategy
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {(() => {
+                                    try {
+                                        const plan = JSON.parse(projectData.project_plan);
+                                        return (
+                                            <>
+                                                <div>
+                                                    <h4 className="font-semibold text-sm mb-1">Architecture Design</h4>
+                                                    <p className="text-sm text-gray-600">{plan.architecture_design}</p>
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold text-sm mb-1">Deliverables</h4>
+                                                    <ul className="list-disc list-inside text-sm text-gray-600">
+                                                        {plan.deliverables.map((d: string, i: number) => (
+                                                            <li key={i}>{d}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold text-sm mb-1">Unit Test Strategy</h4>
+                                                    <p className="text-sm text-gray-600">{plan.unit_test_strategy}</p>
+                                                </div>
+                                            </>
+                                        );
+                                    } catch (e) {
+                                        return <p className="text-sm text-red-500">Error parsing project plan.</p>;
+                                    }
+                                })()}
+                            </CardContent>
+                        </Card>
                     )}
                 </div>
-            )}
-
-            {activeTab === 'experiments' && (
-                <div>
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-medium">Experiment Logs</h3>
-                        <button className="bg-green-600 text-white px-3 py-1 rounded text-sm" onClick={() => alert('Add Experiment feature coming soon')}>
-                            + Log Experiment
-                        </button>
-                    </div>
-                    {experiments.length === 0 ? (
-                        <p className="text-gray-500 italic">No experiments logged yet.</p>
-                    ) : (
-                        <ul className="divide-y">
-                            {experiments.map(exp => (
-                                <li key={exp.id} className="py-3">
-                                    <div className="flex justify-between">
-                                        <h4 className="font-bold">{exp.title}</h4>
-                                        <span className="text-sm text-gray-500">{new Date(exp.date).toLocaleDateString()}</span>
-                                    </div>
-                                    <p className="text-sm text-gray-800 mt-1">{exp.outcome}</p>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
+            ) : (
+                <div className="text-center py-8 text-gray-500">
+                    No project data available.
                 </div>
             )}
         </div>
     );
-};
+}
