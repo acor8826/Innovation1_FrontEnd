@@ -18,13 +18,14 @@ import { AddTaskModal } from '../components/kanban/AddTaskModal';
 import { taskService } from '../services/taskService';
 import { apiClient } from '../services/api';
 import { Task } from '../types/task';
+import { Project } from '../types/project';
 import { toast } from 'sonner';
 import { RnDProjectExpansionView } from '../components/rnd/RnDProjectExpansion';
 import { RnDTaskExpansionView } from '../components/rnd/RnDTaskExpansion';
 
 export default function ProjectDetail() {
   const { id } = useParams();
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<Project | null>(null);
   const [selectedStatus, setSelectedStatus] = useState('active');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [projectTasks, setProjectTasks] = useState<Task[]>([]);
@@ -169,6 +170,79 @@ export default function ProjectDetail() {
             <StatusBadge status={project.status} />
           </div>
         </div>
+
+        {/* Metadata Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <div>
+            <p className="text-sm text-gray-500">Start Date</p>
+            <p className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleDateString() : 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Deadline</p>
+            <p className="font-medium">{project.deadline ? new Date(project.deadline).toLocaleDateString() : 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Created At</p>
+            <p className="font-medium">{new Date(project.createdAt).toLocaleDateString()}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Updated At</p>
+            <p className="font-medium">{new Date(project.updatedAt).toLocaleDateString()}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Is R&D?</p>
+            <div className="flex items-center mt-1">
+              {project.is_rnd ? (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                  <CheckSquare className="w-3 h-3 mr-1" />
+                  Yes
+                </span>
+              ) : (
+                <span className="text-gray-500">No</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* R&D Context Section */}
+        {project.is_rnd && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <UsersIcon className="w-5 h-5 text-purple-600" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-900">R&D Context</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">Technical Uncertainty</h3>
+                  <p className="text-gray-900 whitespace-pre-wrap">{project.technical_uncertainty || 'N/A'}</p>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500 mb-1">New Knowledge Intended</h3>
+                  <p className="text-gray-900 whitespace-pre-wrap">{project.new_knowledge_intended || 'N/A'}</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Hypothesis</h3>
+                <p className="text-gray-900 whitespace-pre-wrap">{project.hypothesis || 'N/A'}</p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Experiment Plan</h3>
+                <p className="text-gray-900 whitespace-pre-wrap">{project.experiment_plan || 'N/A'}</p>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium text-gray-500 mb-1">Core Activity Description</h3>
+                <p className="text-gray-900 whitespace-pre-wrap">{project.core_activity_description || 'N/A'}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
