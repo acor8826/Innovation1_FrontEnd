@@ -107,7 +107,11 @@ export const apiClient = {
   },
 
   async getProjects() {
-    return this.request<any[]>('/projects');
+    return this.request<any[]>('/projects/');
+  },
+
+  async getProject(projectId: string) {
+    return this.request<any>(`/projects/${projectId}`);
   },
 
   async getTasks() {

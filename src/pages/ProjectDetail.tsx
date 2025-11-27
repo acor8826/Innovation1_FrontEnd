@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Edit, Plus, Calendar, Users as UsersIcon, CheckSquare } from 'lucide-react';
 import { DashboardLayout } from '../components/layout/DashboardLayout';
-import { projects } from '../data/mockData';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Button } from '../components/ui/button';
@@ -17,6 +16,7 @@ import {
 } from '../components/ui/select';
 import { AddTaskModal } from '../components/kanban/AddTaskModal';
 import { taskService } from '../services/taskService';
+import { apiClient } from '../services/api';
 import { Task } from '../types/task';
 import { toast } from 'sonner';
 import { RnDProjectExpansionView } from '../components/rnd/RnDProjectExpansion';
@@ -24,11 +24,33 @@ import { RnDTaskExpansionView } from '../components/rnd/RnDTaskExpansion';
 
 export default function ProjectDetail() {
   const { id } = useParams();
-  const project = projects.find((p) => p.id === id);
-  const [selectedStatus, setSelectedStatus] = useState(project?.status || 'active');
+  const [project, setProject] = useState<any>(null);
+  const [selectedStatus, setSelectedStatus] = useState('active');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [projectTasks, setProjectTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [projectLoading, setProjectLoading] = useState(true);
+
+  // Load project details
+  useEffect(() => {
+    const fetchProject = async () => {
+      if (!id) return;
+      try {
+        setProjectLoading(true);
+        console.log(`[API Debug] Fetching Single Project: ${id}`);
+        const data = await apiClient.getProject(id);
+        setProject(data);
+        setSelectedStatus(data.status);
+      } catch (error) {
+        console.error('Failed to load project:', error);
+        toast.error('Failed to load project details');
+      } finally {
+        setProjectLoading(false);
+      }
+    };
+
+    fetchProject();
+  }, [id]);
 
   // Load tasks for this project
   useEffect(() => {
@@ -81,6 +103,16 @@ export default function ProjectDetail() {
       toast.error('Failed to update task');
     }
   };
+
+  if (projectLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   if (!project) {
     return (
@@ -206,9 +238,9 @@ export default function ProjectDetail() {
                           )}
                           {task.priority && (
                             <span className={`text-xs px-2 py-0.5 rounded-full ${task.priority === 'urgent' ? 'bg-red-50 text-red-600' :
-                                task.priority === 'high' ? 'bg-orange-50 text-orange-600' :
-                                  task.priority === 'medium' ? 'bg-yellow-50 text-yellow-600' :
-                                    'bg-blue-50 text-blue-600'
+                              task.priority === 'high' ? 'bg-orange-50 text-orange-600' :
+                                task.priority === 'medium' ? 'bg-yellow-50 text-yellow-600' :
+                                  'bg-blue-50 text-blue-600'
                               }`}>
                               {task.priority}
                             </span>
@@ -245,7 +277,7 @@ export default function ProjectDetail() {
                   <div className="flex items-center gap-2">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={project.ownerAvatar} alt={project.owner} />
-                      <AvatarFallback>{project.owner[0]}</AvatarFallback>
+                      <AvatarFallback>{project.owner?.[0] || '?'}</AvatarFallback>
                     </Avatar>
                     <span className="text-gray-900">{project.owner}</span>
                   </div>
@@ -257,7 +289,7 @@ export default function ProjectDetail() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h3 className="text-gray-900 mb-4">Team Members</h3>
               <div className="space-y-4">
-                {project.teamMembers.map((member) => (
+                {project.teamMembers && project.teamMembers.map((member: any) => (
                   <div key={member.id} className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage src={member.avatar} alt={member.name} />
@@ -284,7 +316,9 @@ export default function ProjectDetail() {
                   <div className="w-2 h-2 rounded-full bg-blue-600 mt-2"></div>
                   <div>
                     <p className="text-gray-900">Project created</p>
-                    <p className="text-gray-500">Nov 1, 2025</p>
+                    <p className="text-gray-500">
+                      {project.createdAt ? new Date(project.createdAt).toLocaleDateString() : 'N/A'}
+                    </p>
                   </div>
                 </div>
                 <div className="flex gap-3">

@@ -53,17 +53,22 @@ export function AddProjectModal({ open, onOpenChange, onProjectCreated }: AddPro
     setIsLoading(true);
     try {
       console.log('📤 Creating project:', formData);
-      const result = await apiClient.createProject({
+
+      // Construct payload with proper null handling for empty strings
+      const payload = {
         name: formData.name,
-        description: formData.description,
+        description: formData.description || null,
         status: formData.status,
         deadline: formData.deadline || null,
         is_rnd: formData.is_rnd,
-        start_date: formData.is_rnd ? (formData.start_date || null) : null,
-        technical_uncertainty: formData.is_rnd ? (formData.technical_uncertainty || null) : null,
-        new_knowledge_intended: formData.is_rnd ? (formData.new_knowledge_intended || null) : null,
-        hypothesis: formData.is_rnd ? (formData.hypothesis || null) : null,
-      });
+        start_date: formData.is_rnd && formData.start_date ? formData.start_date : null,
+        technical_uncertainty: formData.is_rnd && formData.technical_uncertainty ? formData.technical_uncertainty : null,
+        new_knowledge_intended: formData.is_rnd && formData.new_knowledge_intended ? formData.new_knowledge_intended : null,
+        hypothesis: formData.is_rnd && formData.hypothesis ? formData.hypothesis : null,
+      };
+
+      console.log('📤 Payload to send:', payload);
+      const result = await apiClient.createProject(payload);
 
       console.log('✅ Project created successfully:', result);
       toast.success('Project created successfully');

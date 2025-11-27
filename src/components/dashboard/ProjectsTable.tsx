@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Trash2, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Project } from '../../data/mockData';
 import { StatusBadge } from '../ui/StatusBadge';
@@ -12,16 +12,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "../ui/alert-dialog";
+import { apiClient } from '../../services/api';
+import { AddProjectModal } from '../projects/AddProjectModal';
 
 interface ProjectsTableProps {
   projects: Project[];
+  onRefresh?: () => void;
 }
 
-export function ProjectsTable({ projects }: ProjectsTableProps) {
+export function ProjectsTable({ projects, onRefresh }: ProjectsTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+
+  // Delete State
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Add Project State
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   // Filter projects
   const filteredProjects = projects.filter((project) => {
@@ -35,12 +56,40 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedProjects = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleDeleteClick = (project: Project) => {
+    setProjectToDelete(project);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return;
+
+    try {
+      setIsDeleting(true);
+      await apiClient.deleteProject(projectToDelete.id);
+      setDeleteDialogOpen(false);
+      setProjectToDelete(null);
+      if (onRefresh) {
+        onRefresh();
+      }
+    } catch (error) {
+      console.error("Failed to delete project:", error);
+      // Optional: Add toast notification here
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-gray-900">Projects</h2>
+          <h2 className="text-gray-900">Projects (Updated)</h2>
+          <Button onClick={() => setIsAddModalOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            New Project
+          </Button>
         </div>
 
         {/* Search and Filter */}
@@ -104,9 +153,19 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
                 </td>
                 <td className="px-6 py-4 text-gray-600">{project.lastUpdated}</td>
                 <td className="px-6 py-4">
-                  <Link to={`/projects/${project.id}`}>
-                    <Button variant="ghost" size="sm">View</Button>
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link to={`/projects/${project.id}`}>
+                      <Button variant="ghost" size="sm">View</Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => handleDeleteClick(project)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -152,6 +211,41 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the project
+              "{projectToDelete?.name}" and remove all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                handleConfirmDelete();
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete Project"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Add Project Modal */}
+      <AddProjectModal
+        open={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
+        onProjectCreated={() => {
+          if (onRefresh) onRefresh();
+        }}
+      />
     </div>
   );
 }
