@@ -1,9 +1,11 @@
 // API Client Service for Innovation1
-// Points to Cloud Run backend
+// Points to Cloud Run backend (Australia)
 
 const isProduction = window.location.hostname !== 'localhost';
+
+// FIXED: Updated to point to the Australian Backend
 const BACKEND_BASE_URL = isProduction
-  ? 'https://innovation1-api-710611968322.us-central1.run.app/api'
+  ? 'https://innovation1-backend-c6mk7saqmq-ts.a.run.app/api'
   : 'http://localhost:8001/api';
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);

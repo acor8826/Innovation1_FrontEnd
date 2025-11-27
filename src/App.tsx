@@ -10,7 +10,7 @@ import Tasks from './pages/Tasks';
 import Team from './pages/Team';
 import AtomWaveFunctionDemo from './pages/AtomWaveFunctionDemo';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { Toaster } from 'sonner@2.0.3';
+import { Toaster } from 'sonner';
 
 export default function App() {
   return (

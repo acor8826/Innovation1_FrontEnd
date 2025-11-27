@@ -188,6 +188,7 @@ class TaskService {
 
   async getTasks(): Promise<Task[]> {
     try {
+      // Direct call to API
       const response = await apiClient.getTasks();
       return response.map(this.convertApiTaskToTask);
     } catch (error) {
@@ -198,8 +199,11 @@ class TaskService {
 
   async getTasksByStatus(status: TaskStatus): Promise<Task[]> {
     try {
-      const response = await apiClient.getTasks({ status });
-      return response.map(this.convertApiTaskToTask).sort((a, b) => a.order - b.order);
+      // FIX 1: Fetch all tasks and filter client-side 
+      // (because apiClient.getTasks() doesn't accept arguments yet)
+      const response = await apiClient.getTasks();
+      const allTasks = response.map(this.convertApiTaskToTask);
+      return allTasks.filter(t => t.status === status).sort((a, b) => a.order - b.order);
     } catch (error) {
       console.warn('Failed to fetch tasks by status from API, using local cache:', error);
       return this.tasks.filter((task) => task.status === status).sort((a, b) => a.order - b.order);
@@ -240,11 +244,12 @@ class TaskService {
         'done': 'DONE',
       };
 
-      const response = await apiClient.updateTaskStatus(
-        taskId,
-        statusMap[newStatus],
-        newOrder
-      );
+      // FIX 2: Use apiClient.updateTask instead of non-existent updateTaskStatus
+      const response = await apiClient.updateTask(taskId, {
+        status: statusMap[newStatus],
+        order: newOrder
+      });
+
       return this.convertApiTaskToTask(response);
     } catch (error) {
       console.warn('Failed to update task status in API, updating locally:', error);
@@ -294,6 +299,7 @@ class TaskService {
         order: updates.order,
       };
 
+      // Remove undefined keys
       Object.keys(updateData).forEach(key => updateData[key] === undefined && delete updateData[key]);
 
       const response = await apiClient.updateTask(taskId, updateData);
@@ -364,10 +370,10 @@ class TaskService {
 
   async getProjects(): Promise<Array<{ id: string; name: string; color: string }>> {
     await delay(100);
-    
+
     // Extract unique projects from tasks
     const projectMap = new Map<string, { id: string; name: string; color: string }>();
-    
+
     this.tasks.forEach(task => {
       if (task.projectId && task.projectName && !projectMap.has(task.projectId)) {
         projectMap.set(task.projectId, {
@@ -377,7 +383,7 @@ class TaskService {
         });
       }
     });
-    
+
     return Array.from(projectMap.values());
   }
 

@@ -165,15 +165,22 @@ class TeamService {
   }
 
   async getMemberById(id: string): Promise<TeamMember | undefined> {
+    // FIX: The API client doesn't support fetching a single member yet.
+    // We check the local cache first, then refresh the whole list if needed.
+
+    // 1. Check local cache
+    const cachedMember = this.members.find((m) => m.id === id);
+    if (cachedMember) return cachedMember;
+
+    // 2. If not found, fetch latest list and check again
     try {
-      const response = await apiClient.getTeamMember(id);
-      if (response) {
-        return this.convertApiMemberToTeamMember(response);
-      }
+      await this.getMembers();
+      return this.members.find((m) => m.id === id);
     } catch (error) {
       console.warn('Failed to fetch team member from API, checking local cache:', error);
     }
-    return this.members.find((m) => m.id === id);
+
+    return undefined;
   }
 
   async createMember(member: Omit<TeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<TeamMember> {
