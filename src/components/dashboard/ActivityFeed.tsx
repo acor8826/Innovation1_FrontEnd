@@ -9,7 +9,7 @@ export function ActivityFeed({ activities }: ActivityFeedProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full">
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-gray-900">Recent Activity</h2>
+        <h2 className="text-gray-900">Very Recent Activity</h2>
       </div>
 
       <div className="p-6">
