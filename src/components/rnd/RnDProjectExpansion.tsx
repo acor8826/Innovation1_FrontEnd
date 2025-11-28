@@ -15,7 +15,6 @@ import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { apiClient } from '../../services/api';
-import { aiService } from '../../services/ai';
 import { toast } from 'sonner';
 
 interface RnDProjectExpansionProps {
@@ -56,9 +55,9 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
 
         try {
             setIsGenerating(true);
-            const response = await aiService.generatePlan(projectId, concept);
+            const response = await apiClient.generateRnDPlan(projectId, concept);
 
-            toast.success(`Plan generated! ${response.tasks.length} tasks added.`);
+            toast.success('AI Plan Generated Successfully');
 
             // Reload data to show new fields
             await loadProjectData();

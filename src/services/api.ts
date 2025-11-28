@@ -56,11 +56,42 @@ export const apiClient = {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
+    const config = {
+      ...options,
+      headers,
+    };
+
+    // Debug Logging
+    console.groupCollapsed(`API Request: ${options.method || 'GET'} ${endpoint}`);
+    console.log('URL:', url);
+    console.log('Headers:', headers);
+    if (options.body) {
+      try {
+        console.log('Body:', JSON.parse(options.body.toString()));
+      } catch {
+        console.log('Body:', options.body);
+      }
+    }
+    console.groupEnd();
+
     try {
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
+      const response = await fetch(url, config);
+
+      // Debug Response
+      console.groupCollapsed(`API Response: ${response.status} ${endpoint}`);
+      console.log('Status:', response.status);
+      console.log('Headers:', Object.fromEntries(response.headers.entries()));
+      if (response.status !== 204) { // Don't try to parse body for 204
+        const responseClone = response.clone();
+        try {
+          const jsonResponse = await responseClone.json();
+          console.log('Body:', jsonResponse);
+        } catch (e) {
+          const textResponse = await responseClone.text();
+          console.log('Body (text):', textResponse);
+        }
+      }
+      console.groupEnd();
 
       if (response.status === 401) {
         console.error(`[API Debug] 401 Unauthorized for ${endpoint}`);
@@ -78,9 +109,14 @@ export const apiClient = {
         throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
       }
 
+      // Handle 204 No Content
+      if (response.status === 204) {
+        return {} as T;
+      }
+
       return response.json();
     } catch (error) {
-      console.error('API Request failed:', error);
+      console.error('API Request Failed:', { url, error });
       throw error;
     }
   },
@@ -185,6 +221,16 @@ export const apiClient = {
   async deleteTeamMember(memberId: string) {
     return this.request<any>(`/team/${memberId}`, {
       method: 'DELETE',
+    });
+  },
+
+  async generateRnDPlan(projectId: string, concept: string) {
+    return this.request<any>('/ai/generate-plan', {
+      method: 'POST',
+      body: JSON.stringify({
+        project_id: projectId,
+        concept: concept,
+      }),
     });
   },
 };
