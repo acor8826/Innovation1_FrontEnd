@@ -68,17 +68,44 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
 
         try {
             setIsGenerating(true);
-            // Simulate progress steps could be added here if we had a streaming API
+            console.log('[AI] Starting plan generation for project:', projectId);
+            console.log('[AI] Concept length:', concept.length, 'chars');
+            console.log('[AI] Concept preview:', concept.substring(0, 100) + '...');
+
             await apiClient.generateRnDPlan(projectId, concept);
 
+            console.log('[AI] Plan generated successfully');
             toast.success('AI Plan Generated Successfully');
 
             // Reload data to show new fields
+            console.log('[AI] Reloading project data');
             await loadProjectData();
             setConcept(''); // Clear input
-        } catch (error) {
-            console.error('AI Generation failed:', error);
-            toast.error('Failed to generate plan. Please try again.');
+        } catch (error: any) {
+            console.error('[AI] Generation failed:', {
+                error: error,
+                name: error?.name,
+                message: error?.message,
+                response: error?.response,
+                status: error?.response?.status,
+                statusText: error?.response?.statusText,
+                data: error?.response?.data,
+                stack: error?.stack
+            });
+
+            // More specific error messages based on error type
+            if (error?.response?.status === 500) {
+                toast.error('Server error during generation. Please check the logs and try again.');
+            } else if (error?.response?.status === 404) {
+                toast.error('Project not found. Please refresh the page.');
+            } else if (error?.response?.status === 400) {
+                toast.error('Invalid request. Please check your input and try again.');
+            } else if (error?.message?.includes('Network')) {
+                toast.error('Network error. Please check your connection and try again.');
+            } else {
+                const errorMessage = error?.response?.data?.detail || error?.message || 'Unknown error occurred';
+                toast.error(`Failed to generate plan: ${errorMessage}`);
+            }
         } finally {
             setIsGenerating(false);
         }
@@ -133,7 +160,7 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
                     <Sparkles className="w-32 h-32 text-purple-600" />
                 </div>
 
-                <CardHeader className="pb-2">
+                <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-purple-900 text-lg">
                         <Sparkles className="w-5 h-5 text-purple-600" />
                         AI R&D Agent
@@ -142,7 +169,7 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
                         </Badge>
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 relative z-0">
+                <CardContent className="space-y-6 relative z-0">
                     <p className="text-sm text-purple-800/80 leading-relaxed max-w-3xl">
                         Describe your project concept below. Our AI agent will analyze it against <strong>Australian R&D Tax Incentive</strong> criteria,
                         generate compliance documentation, create a project plan, and populate your task board automatically.
@@ -167,28 +194,31 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
                         )}
                     </div>
 
-                    <div className="flex justify-end pt-2">
-                        <Button
-                            onClick={handleGeneratePlan}
-                            disabled={isGenerating || !concept.trim()}
-                            className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white disabled:bg-purple-300 disabled:text-white disabled:opacity-100 shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all duration-300 font-medium px-8 py-6 h-auto text-base"
-                        >
-                            {isGenerating ? (
-                                <>
-                                    <Loader2 className="w-5 h-5 mr-3 animate-spin" />
-                                    <span className="flex flex-col items-start text-left">
-                                        <span>Generating Plan...</span>
-                                        <span className="text-xs opacity-90 font-normal">This may take up to 30 seconds</span>
-                                    </span>
-                                </>
-                            ) : (
-                                <>
-                                    <Sparkles className="w-5 h-5 mr-2" />
-                                    Generate R&D Plan & Tasks
-                                    <ArrowRight className="w-4 h-4 ml-2 opacity-70" />
-                                </>
-                            )}
-                        </Button>
+
+                    <div className="space-y-3 pt-4">
+                        <p className="text-xs text-gray-500 italic">
+                            💡 Tip: Be specific about technical challenges and uncertainties
+                        </p>
+                        <div className="flex justify-end">
+                            <Button
+                                onClick={handleGeneratePlan}
+                                disabled={isGenerating}
+                                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white disabled:opacity-100 disabled:from-gray-400 disabled:to-gray-500 disabled:text-white disabled:cursor-not-allowed shadow-lg shadow-blue-200/50 hover:shadow-xl hover:shadow-blue-300/50 transition-all duration-300 font-semibold px-6 py-3 rounded-lg"
+                            >
+                                {isGenerating ? (
+                                    <>
+                                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                        Generating Plan...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="w-5 h-5 mr-2" />
+                                        Generate R&D Plan & Tasks
+                                        <ArrowRight className="w-4 h-4 ml-2" />
+                                    </>
+                                )}
+                            </Button>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

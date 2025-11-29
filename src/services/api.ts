@@ -271,12 +271,23 @@ export const apiClient = {
   },
 
   async generateRnDPlan(projectId: string, concept: string) {
-    return this.request<any>('/ai/generate-plan', {
-      method: 'POST',
-      body: JSON.stringify({
-        project_id: projectId,
-        concept: concept,
-      }),
+    console.log('[API] Calling generateRnDPlan:', {
+      projectId,
+      conceptLength: concept.length
     });
+    try {
+      const response = await this.request<any>('/ai/generate-plan', {
+        method: 'POST',
+        body: JSON.stringify({
+          project_id: projectId,
+          concept: concept,
+        }),
+      });
+      console.log('[API] generateRnDPlan success:', response);
+      return response;
+    } catch (error) {
+      console.error('[API] generateRnDPlan failed:', error);
+      throw error;
+    }
   },
 };
