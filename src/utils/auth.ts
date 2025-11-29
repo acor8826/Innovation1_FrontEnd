@@ -1,7 +1,7 @@
 // Authentication utility with backend API integration
 import { apiClient } from '../services/api';
 
-const AUTH_TOKEN_KEY = 'innovation1_auth_token';
+const AUTH_TOKEN_KEY = 'auth_token';
 const USER_KEY = 'innovation1_user';
 
 // Clear invalid tokens on startup

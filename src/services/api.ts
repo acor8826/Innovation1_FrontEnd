@@ -1,66 +1,3 @@
-// --- FIREBASE IMPORTS ---
-import { initializeApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, User as FirebaseAuthUser } from 'firebase/auth';
-import { getFirestore, Firestore, doc, getDoc, setDoc, updateDoc, FirestoreError } from 'firebase/firestore';
-
-// --- GLOBAL VARIABLES (Provided by Canvas Environment) ---
-// Note: These must be declared as if they exist globally
-declare const __app_id: string;
-declare const __firebase_config: string;
-declare const __initial_auth_token: string | undefined;
-
-// --- FIREBASE AND AUTH STATE ---
-let firebaseApp: FirebaseApp | null = null;
-let firebaseAuth: Auth | null = null;
-let firestoreDb: Firestore | null = null;
-let currentUserId: string | null = null;
-let isAuthReady = false;
-
-// Function to initialize Firebase once
-const initializeFirebase = async () => {
-  if (firebaseApp) return;
-
-  try {
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-
-    if (Object.keys(firebaseConfig).length === 0) {
-      console.error("Firebase config is missing.");
-      return;
-    }
-
-    firebaseApp = initializeApp(firebaseConfig);
-    const auth = getAuth(firebaseApp);
-    firebaseAuth = auth;
-    firestoreDb = getFirestore(firebaseApp);
-
-    // Authentication Setup
-    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-      await signInWithCustomToken(auth, __initial_auth_token);
-    } else {
-      await signInAnonymously(auth);
-    }
-
-    // Wait for the auth state to settle
-    await new Promise<void>(resolve => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        currentUserId = user ? user.uid : (crypto.randomUUID ? crypto.randomUUID() : 'anonymous');
-        isAuthReady = true;
-        unsubscribe();
-        resolve();
-      });
-    });
-
-    console.log(`Firebase initialized. User ID: ${currentUserId}. Auth Ready.`);
-
-  } catch (e) {
-    console.error("Firebase initialization or auth failed:", e);
-    // Fallback to anonymous ID if auth fails completely
-    currentUserId = crypto.randomUUID ? crypto.randomUUID() : 'fallback-id';
-    isAuthReady = true;
-  }
-};
-
 // --- API CLIENT CORE ---
 
 const isProduction = window.location.hostname !== 'localhost';
@@ -72,53 +9,29 @@ const BACKEND_BASE_URL = import.meta.env.VITE_API_URL || (isProduction
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);
 
-// Firestore paths for token data
-const getAuthDocRef = () => {
-  if (!firestoreDb || !currentUserId) {
-    throw new Error("Firestore not initialized or user ID missing.");
-  }
-  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-  return doc(firestoreDb, `artifacts/${appId}/users/${currentUserId}/tokens`, 'api_token');
-};
+const TOKEN_KEY = 'auth_token';
 
 export const apiClient = {
   baseUrl: BACKEND_BASE_URL,
 
-  // Helper to wait for Firebase setup
+  // Helper to wait for auth setup (now instant with localStorage)
   async ensureAuth() {
-    if (!isAuthReady) {
-      await initializeFirebase();
-    }
+    // No-op for localStorage
+    return Promise.resolve();
   },
 
-  // Refactored to store token in Firestore
+  // Store token in localStorage
   async saveToken(token: string) {
-    await this.ensureAuth();
     try {
-      await setDoc(getAuthDocRef(), {
-        token: token,
-        updatedAt: new Date().toISOString()
-      });
+      localStorage.setItem(TOKEN_KEY, token);
     } catch (e) {
-      console.error("Failed to save token to Firestore:", e);
+      console.error("Failed to save token to localStorage:", e);
     }
   },
 
-  // Refactored to retrieve token from Firestore
+  // Retrieve token from localStorage
   async getToken() {
-    await this.ensureAuth();
-    if (!firestoreDb || !currentUserId) return null;
-
-    try {
-      const docSnap = await getDoc(getAuthDocRef());
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return data?.token || null;
-      }
-    } catch (e) {
-      console.warn("Failed to retrieve token from Firestore:", e);
-    }
-    return null;
+    return localStorage.getItem(TOKEN_KEY);
   },
 
   async login(email: string, password: string) {
@@ -139,16 +52,15 @@ export const apiClient = {
     }
 
     const data = await response.json();
-    // SUCCESS: Save the received access token to Firestore
+    // SUCCESS: Save the received access token
     await this.saveToken(data.access_token);
     return data;
   },
 
   // This is the core authenticated request method
   async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    await this.ensureAuth(); // Ensure auth is ready before attempting request
     const url = `${this.baseUrl}${endpoint}`;
-    const token = await this.getToken(); // Retrieve token from secure store (Firestore)
+    const token = await this.getToken();
 
     // Debug log for auth token
     if (endpoint.includes('/dashboard') || endpoint.includes('/projects')) {
@@ -212,7 +124,7 @@ export const apiClient = {
 
         if (response.status === 401) {
           console.error(`[API Debug] 401 Unauthorized for ${endpoint}. Clearing token.`);
-          await this.clearAuthData(); // Clear token from Firestore
+          await this.clearAuthData();
 
           if (!window.location.pathname.includes('/login')) {
             window.location.href = '/login';
@@ -249,19 +161,11 @@ export const apiClient = {
   },
 
   async clearAuthData() {
-    await this.ensureAuth();
-    if (!firestoreDb || !currentUserId) return;
-
     try {
-      // Delete the token document or set it to null
-      await updateDoc(getAuthDocRef(), {
-        token: null,
-        updatedAt: new Date().toISOString()
-      });
-      console.log("Auth token cleared from Firestore.");
+      localStorage.removeItem(TOKEN_KEY);
+      console.log("Auth token cleared from localStorage.");
     } catch (e) {
-      // Document might not exist, which is fine
-      console.warn("Failed to clear token document in Firestore:", (e as FirestoreError).message);
+      console.warn("Failed to clear token from localStorage:", e);
     }
   },
 
@@ -277,9 +181,6 @@ export const apiClient = {
     }
 
     await this.clearAuthData();
-    // Since we are not using localStorage anymore, we don't clear it.
-    // We might clear user profile data if it was stored elsewhere, but 
-    // assuming it's managed by context/state now.
     return { success: true };
   },
 
