@@ -3,10 +3,10 @@
 
 const isProduction = window.location.hostname !== 'localhost';
 
-// FIXED: Updated to point to the Australian Backend
-const BACKEND_BASE_URL = isProduction
-  ? 'https://innovation1-backend-c6mk7saqmq-ts.a.run.app/api'
-  : 'http://localhost:8001/api';
+// FIXED: Use environment variable or fallback to Australian Backend
+const BACKEND_BASE_URL = import.meta.env.VITE_API_URL || (isProduction
+  ? 'https://innovation1-backend-710611968322.australia-southeast1.run.app/'
+  : 'http://localhost:8001');
 
 console.log(`API Client initialized: ${BACKEND_BASE_URL}`);
 

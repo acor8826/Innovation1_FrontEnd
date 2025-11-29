@@ -171,7 +171,7 @@ export function RnDProjectExpansionView({ projectId }: RnDProjectExpansionProps)
                         <Button
                             onClick={handleGeneratePlan}
                             disabled={isGenerating || !concept.trim()}
-                            className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all duration-300 font-medium px-8 py-6 h-auto text-base"
+                            className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white disabled:bg-purple-300 disabled:text-white disabled:opacity-100 shadow-lg shadow-purple-200 hover:shadow-purple-300 transition-all duration-300 font-medium px-8 py-6 h-auto text-base"
                         >
                             {isGenerating ? (
                                 <>
