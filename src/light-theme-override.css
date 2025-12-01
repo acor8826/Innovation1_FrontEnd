@@ -1,0 +1,919 @@
+/* Light Blue & White Theme - 40 Additional UI/UX Improvements (Aggressive Overrides) */
+
+/* ============================================
+   1. BACKGROUND & CONTRAST (1-10)
+   ============================================ */
+
+/* 1. Force Global White Background */
+html,
+body,
+#root {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  /* Slate 700 */
+}
+
+/* 2. Override Main Container Dark Background */
+#root>div[class*="bg-[#020817]"],
+div[class*="bg-[#020817]"],
+div[class*="bg-slate-900"],
+div[class*="bg-gray-900"] {
+  background-color: #FFFFFF !important;
+  background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 100%) !important;
+}
+
+/* 3. Section Backgrounds */
+section {
+  background-color: #FFFFFF !important;
+}
+
+section:nth-of-type(even) {
+  background-color: #F8FAFC !important;
+  /* Slate 50 */
+}
+
+/* 4. Override Arbitrary Dark Gradients */
+div[class*="from-[#0D1B4C]"],
+div[class*="via-[#020817]"],
+div[class*="to-[#0D1B4C]"] {
+  background: none !important;
+  background-color: transparent !important;
+}
+
+/* 5. Heading Contrast */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+[class*="text-white"],
+[class*="text-[#EEF8FF]"] {
+  color: #0F172A !important;
+  /* Slate 900 */
+}
+
+/* 6. Body Text Contrast */
+p,
+li,
+span,
+div {
+  color: #334155 !important;
+  /* Slate 700 */
+}
+
+/* 7. Navigation Bar Light Theme */
+nav {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid #E0F2FE !important;
+}
+
+/* 8. Footer Light Theme */
+footer {
+  background-color: #F1F5F9 !important;
+  /* Slate 100 */
+  border-top: 1px solid #E2E8F0 !important;
+}
+
+footer * {
+  color: #475569 !important;
+  /* Slate 600 */
+}
+
+/* 9. Subtle Body Gradient */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50vh;
+  background: radial-gradient(circle at 50% 0%, rgba(14, 165, 233, 0.05), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 10. Remove Dark Overlays */
+[class*="bg-black"],
+[class*="bg-opacity-"],
+[class*="bg-white/5"] {
+  background-color: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid #E0F2FE !important;
+}
+
+/* ============================================
+   2. VISUAL HIERARCHY & COMPONENTS (11-20)
+   ============================================ */
+
+/* 11. Stronger Card Borders */
+[class*="rounded-"],
+[class*="card"] {
+  border-color: #E0F2FE !important;
+}
+
+/* 12. Soft Blue Shadows */
+[class*="shadow"] {
+  box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.1), 0 2px 4px -1px rgba(14, 165, 233, 0.06) !important;
+}
+
+/* 13. Enhanced Button Gradients */
+button[class*="bg-gradient"],
+a[class*="bg-gradient"] {
+  background: linear-gradient(135deg, #0EA5E9 0%, #2563EB 100%) !important;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3) !important;
+}
+
+/* 14. Hover Lift Effect */
+button:hover,
+a[class*="bg-"]:hover,
+[class*="card"]:hover {
+  transform: translateY(-2px) !important;
+}
+
+/* 15. Light Scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* 16. Hero Shimmer */
+section[class*="min-h-screen"] {
+  position: relative;
+  overflow: hidden;
+}
+
+section[class*="min-h-screen"]::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.03) 0%, transparent 50%);
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 17. Light Inputs */
+input,
+textarea,
+select {
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #0EA5E9 !important;
+  ring: 2px solid rgba(14, 165, 233, 0.2) !important;
+}
+
+/* 18. Mobile Menu Light */
+nav div[class*="lg:hidden"] {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+}
+
+/* 19. Scroll Progress Bar */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0EA5E9, #3B82F6);
+  width: var(--scroll-progress, 0%);
+  z-index: 9999;
+  transition: width 0.1s linear;
+}
+
+/* 20. Logo Visibility Pill */
+nav a[class*="group"] {
+  background: linear-gradient(to right, #F0F9FF, #E0F2FE) !important;
+  border: 1px solid #BAE6FD !important;
+  padding: 6px 16px !important;
+  border-radius: 9999px !important;
+}
+
+/* ============================================
+   3. ATOM VISUALIZATION
+   ============================================ */
+
+/* Unhide Atom Components */
+[class*="QuantumAtom"],
+div[class*="QuantumAtomLazy"],
+div[class*="QuantumAtomOptimized"] {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Atom Wrapper Visibility */
+div[class*="h-[400px]"]>div {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+/* Hide Dark Background Sphere */
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="bg-gradient-to-br"]:first-child {
+  background: radial-gradient(circle, rgba(224, 242, 254, 0.4) 0%, rgba(255, 255, 255, 0) 70%) !important;
+  border: 1px solid rgba(14, 165, 233, 0.1) !important;
+  box-shadow: 0 0 40px rgba(14, 165, 233, 0.1) !important;
+}
+
+/* Enhance Orbital Shells (Rings) */
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="absolute"]>div[style*="border"] {
+  border-color: rgba(14, 165, 233, 0.4) !important;
+  box-shadow: 0 0 15px rgba(14, 165, 233, 0.2) !important;
+  border-width: 1.5px !important;
+}
+
+/* Enhance Wave Points */
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="absolute"]>div[style*="width: 1.5px"] {
+  background-color: #0EA5E9 !important;
+  box-shadow: 0 0 4px #0EA5E9 !important;
+  opacity: 0.8 !important;
+}
+
+/* Enhance Electrons */
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="absolute"]>div>div>div[class*="blur-lg"] {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.8) 0%, transparent 70%) !important;
+  opacity: 0.8 !important;
+}
+
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="absolute"]>div>div>div[class*="blur-md"] {
+  background: #0284C7 !important;
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.6) !important;
+  opacity: 1 !important;
+}
+
+/* Enhance Nucleus */
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="top-1/2"]>div[class*="blur-3xl"] {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.4) 0%, transparent 70%) !important;
+}
+
+div[class*="absolute"][class*="inset-0"]>div[class*="relative"]>div[class*="top-1/2"]>div[class*="relative"] {
+  background: radial-gradient(circle at 30% 30%, #E0F2FE 0%, #38BDF8 50%, #0284C7 100%) !important;
+  box-shadow: 0 0 40px rgba(14, 165, 233, 0.6) !important;
+}
+
+/* ============================================
+   4. TYPOGRAPHY & POLISH (21-30)
+   ============================================ */
+
+/* 21. Font Smoothing */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 22. Tabular Nums */
+[class*="text-"][class*="font-bold"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 23. Gradient Text Fix */
+h1 span[class*="bg-clip-text"] {
+  background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 50%, #38BDF8 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* 24. Animated Underlines */
+a:not([class*="bg-"]):hover {
+  text-decoration: underline;
+  text-decoration-color: #0EA5E9;
+  text-underline-offset: 4px;
+}
+
+/* 25. Focus Visible */
+*:focus-visible {
+  outline: 2px solid #0EA5E9;
+  outline-offset: 2px;
+}
+
+/* 26. Line Height */
+p {
+  line-height: 1.6 !important;
+}
+
+/* 27. Mobile Font Sizing */
+@media (max-width: 640px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* 28. Fade In Up Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section>div {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* 29. Hide Dark Mode Elements (EXCEPT ATOM) */
+[class*="ParticleField"],
+[class*="NeuralGrid"],
+[class*="AgentCore"] {
+  opacity: 0.1 !important;
+  filter: invert(1) !important;
+  display: none !important;
+}
+
+/* 30. Button Pulse */
+button[class*="bg-sky"] {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
+  }
+}
+
+/* ============================================
+   5. MOBILE SPECIFIC (31-40)
+   ============================================ */
+
+@media (max-width: 640px) {
+
+  /* 31. Touch Targets */
+  button,
+  a {
+    min-height: 48px;
+    min-width: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 32. Stack Grids */
+  .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 33. Section Padding */
+  section {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+
+  /* 34. Menu Text */
+  nav div[class*="lg:hidden"] a {
+    color: #0F172A !important;
+  }
+
+  /* 35. No Horizontal Scroll */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* 36. Mobile Shadows */
+  [class*="shadow"] {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  /* 37. Heading Sizes */
+  h1 {
+    font-size: 2.25rem !important;
+  }
+
+  h2 {
+    font-size: 1.875rem !important;
+  }
+
+  /* 38. Button Sizing */
+  button {
+    width: 100% !important;
+  }
+
+  /* 39. Readable Inputs */
+  input {
+    font-size: 16px !important;
+  }
+
+  /* 40. Safe Area */
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ============================================
+   6. CASE STUDIES (SHOWCASE) SECTION IMPROVEMENTS
+   ============================================ */
+
+/* 1. Target Section Background */
+#showcase {
+  background-color: #F8FAFC !important;
+  /* Slate 50 */
+  position: relative !important;
+}
+
+/* 2. Hide Dark Gradient */
+#showcase>div[class*="absolute"][class*="bg-gradient-to-b"] {
+  display: none !important;
+}
+
+/* 3. Section Title */
+#showcase h2 {
+  color: #0F172A !important;
+  font-size: 3.5rem !important;
+  background: linear-gradient(135deg, #0F172A 0%, #334155 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* 4. Section Subtitle */
+#showcase p[class*="text-lg"] {
+  color: #64748B !important;
+  font-size: 1.25rem !important;
+}
+
+/* 5. Card Container */
+#showcase div[class*="grid"]>div {
+  background: #FFFFFF !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid #E2E8F0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* 6. Card Hover Effect */
+#showcase div[class*="grid"]>div:hover {
+  transform: translateY(-12px) !important;
+  box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25) !important;
+  border-color: #BAE6FD !important;
+}
+
+/* 7. Card Header (Gradient Area) */
+/* Assuming the first child is the gradient header */
+#showcase div[class*="grid"]>div>div:first-child {
+  height: 200px !important;
+  /* Taller header */
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2rem !important;
+  /* Add a subtle pattern overlay */
+  background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.15) 1px, transparent 0) !important;
+  background-size: 20px 20px !important;
+}
+
+/* 8. Card Header Title */
+#showcase div[class*="grid"]>div>div:first-child h3 {
+  color: #FFFFFF !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  z-index: 10 !important;
+}
+
+/* 9. Card Content Area */
+/* Assuming the second child is the content */
+#showcase div[class*="grid"]>div>div:last-child {
+  padding: 2rem !important;
+  background: #FFFFFF !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+/* 10. Card Description */
+#showcase div[class*="grid"]>div p {
+  color: #475569 !important;
+  line-height: 1.6 !important;
+  font-size: 1rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* 11. Tags Styling */
+#showcase div[class*="grid"]>div div[class*="flex"] {
+  gap: 0.5rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* 12. Individual Tag */
+#showcase div[class*="grid"]>div span[class*="text-xs"] {
+  background-color: #F1F5F9 !important;
+  color: #475569 !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.7rem !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
+/* 13. Learn More Link */
+#showcase div[class*="grid"]>div a,
+#showcase div[class*="grid"]>div button {
+  color: #0EA5E9 !important;
+  font-weight: 600 !important;
+  margin-top: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding-top: 1.5rem !important;
+}
+
+/* 14. Link Hover Arrow */
+#showcase div[class*="grid"]>div a:hover svg,
+#showcase div[class*="grid"]>div button:hover svg {
+  transform: translateX(4px) !important;
+}
+
+/* 15. Glass Shine Effect on Header */
+#showcase div[class*="grid"]>div>div:first-child::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* 16. Watermark Icon in Header */
+#showcase div[class*="grid"]>div>div:first-child::before {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+/* 17. Refine Blur Blobs */
+#showcase div[class*="blur-3xl"] {
+  background-color: #BAE6FD !important;
+  /* Light blue */
+  opacity: 0.4 !important;
+  filter: blur(80px) !important;
+}
+
+/* 18. Card Border Radius Smoothing */
+#showcase div[class*="grid"]>div {
+  /* Attempt super-ellipse if browser supports, standard fallback */
+}
+
+/* 19. Typography Polish */
+#showcase h2 {
+  letter-spacing: -0.02em !important;
+}
+
+/* 20. Mobile Adjustments */
+@media (max-width: 640px) {
+  #showcase div[class*="grid"]>div>div:first-child {
+    height: 160px !important;
+  }
+
+  #showcase h2 {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* ============================================
+   7. DISTINCTIVE STYLING: INTELLIGENT SOLUTIONS vs OUR PROCESS
+   ============================================ */
+
+/* --------------------------------------------
+   SECTION A: INTELLIGENT SOLUTIONS (The "Tech Grid" Look)
+   -------------------------------------------- */
+
+/* 1. Force Section Background to White */
+section#features {
+  background-color: #FFFFFF !important;
+  background-image:
+    linear-gradient(#F1F5F9 1px, transparent 1px),
+    linear-gradient(90deg, #F1F5F9 1px, transparent 1px) !important;
+  background-size: 40px 40px !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* 2. NUCLEAR OPTION: Hide all absolute background divs in this section */
+/* This targets the dark gradient overlays specifically */
+section#features>div.absolute {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 3. Ensure the content container is visible and has no dark bg */
+section#features>div.relative {
+  background: transparent !important;
+  z-index: 20 !important;
+}
+
+/* 4. Force Text Colors to Dark */
+section#features h2 {
+  color: #0F172A !important;
+  /* Slate 900 */
+  text-shadow: none !important;
+  -webkit-text-fill-color: #0F172A !important;
+  background: none !important;
+}
+
+section#features p {
+  color: #475569 !important;
+  /* Slate 600 */
+}
+
+/* 5. Card Container Overrides (Force Light) */
+section#features div[class*="grid"]>div {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 6. Card Title Dark */
+section#features div[class*="grid"]>div h3 {
+  color: #0F172A !important;
+}
+
+/* 7. Card Description Dark */
+section#features div[class*="grid"]>div p {
+  color: #64748B !important;
+}
+
+/* 8. Icon Container Light */
+section#features div[class*="grid"]>div svg {
+  color: #0EA5E9 !important;
+  background-color: #F0F9FF !important;
+  border-color: #BAE6FD !important;
+}
+
+/* 9. Tech Aesthetic: Corner Markers */
+section#features div[class*="grid"]>div::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #0EA5E9;
+  border-left: 2px solid #0EA5E9;
+  border-top-left-radius: 4px;
+  display: block !important;
+}
+
+/* 10. Tech Aesthetic: Bottom Corner */
+section#features div[class*="grid"]>div::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 2px solid #0EA5E9;
+  border-right: 2px solid #0EA5E9;
+  border-bottom-right-radius: 4px;
+  display: block !important;
+}
+
+/* 11. Hover State: Glow */
+section#features div[class*="grid"]>div:hover {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15) !important;
+  border-color: #38BDF8 !important;
+}
+
+/* 12. Section Padding */
+section#features {
+  padding-top: 6rem !important;
+  padding-bottom: 6rem !important;
+}
+
+/* 13. Remove any blur blobs that might be dark */
+section#features div[class*="blur-"] {
+  display: none !important;
+}
+
+/* 14. Ensure Grid Gap */
+section#features div[class*="grid"] {
+  gap: 2rem !important;
+}
+
+/* 15. Mobile Adjustments */
+@media (max-width: 640px) {
+  section#features {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+}
+
+/* 16. Tech Label */
+section#features div[class*="grid"]>div {
+  position: relative !important;
+}
+
+/* 17. Typography Polish */
+section#features h2 {
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* 18. Subtitle Polish */
+section#features p.max-w-2xl {
+  font-size: 1.125rem !important;
+  line-height: 1.75 !important;
+}
+
+/* 19. Icon Size */
+section#features svg {
+  width: 48px !important;
+  height: 48px !important;
+}
+
+/* 20. Force Z-Index to be above any dark layers */
+section#features>div.relative.z-10 {
+  z-index: 50 !important;
+}
+
+
+/* --------------------------------------------
+   SECTION B: OUR PROCESS (The "Organic Flow" Look)
+   -------------------------------------------- */
+
+/* 11. Background: Clean White with Flow */
+#process {
+  background-color: #FFFFFF !important;
+  background-image: radial-gradient(circle at 50% 50%, #F0F9FF 0%, transparent 60%) !important;
+}
+
+/* 12. RESET Wrapper Styles (Fix for Last Child Issue) */
+#process div[class*="grid"]>div {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* 13. Style the INNER CARD (Robust Targeting) */
+#process div[class*="grid"]>div>div[class*="bg-white"] {
+  border-radius: 32px !important;
+  /* Very round */
+  border: none !important;
+  /* No border */
+  box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.1) !important;
+  /* Soft float shadow */
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  padding: 2rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+}
+
+/* 14. Hover: Levitation on Inner Card */
+#process div[class*="grid"]>div:hover>div[class*="bg-white"] {
+  transform: translateY(-12px) scale(1.02) !important;
+  box-shadow: 0 30px 60px -15px rgba(14, 165, 233, 0.2) !important;
+}
+
+/* 15. Icon Container: Circular Gradient */
+#process div[class*="grid"]>div>div[class*="bg-white"]>div[class*="bg-sky-100"] {
+  background: linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%) !important;
+  /* Blue to Purple */
+  border-radius: 50% !important;
+  /* Perfect circle */
+  width: 64px !important;
+  height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: 0 10px 20px -5px rgba(14, 165, 233, 0.4) !important;
+}
+
+/* 16. Icon SVG */
+#process div[class*="grid"]>div>div[class*="bg-white"]>div[class*="bg-sky-100"] svg {
+  color: #FFFFFF !important;
+  width: 32px !important;
+  height: 32px !important;
+}
+
+/* 17. Connector Line: Continuous Gradient (Desktop) */
+@media (min-width: 1024px) {
+  #process div[class*="grid"]::before {
+    height: 4px !important;
+    background: linear-gradient(90deg, #0EA5E9, #8B5CF6) !important;
+    /* Continuous gradient */
+    top: 32px !important;
+    /* Align with icon center */
+    opacity: 0.2 !important;
+  }
+}
+
+/* 18. Numbering: REMOVE ALL NUMBERING (Robust) */
+/* Hide the pseudo-element I added */
+#process div[class*="grid"]>div::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Hide the native Number Badge inside the card */
+#process div[class*="grid"]>div>div[class*="bg-white"]>div[class*="absolute"] {
+  display: none !important;
+}
+
+/* 19. Typography: Friendly & Approachable */
+#process div[class*="grid"]>div h3 {
+  font-family: sans-serif !important;
+  font-size: 1.5rem !important;
+  color: #1E293B !important;
+  margin-top: 1rem !important;
+}
+
+/* 20. Arrows: Soft & Rounded & Centered */
+#process div[class*="grid"]>div:not(:last-child)::after {
+  content: '➜';
+  color: #CBD5E1 !important;
+  font-size: 2rem !important;
+  position: absolute !important;
+  right: -1.75rem !important;
+  /* Centered in gap */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  display: none !important;
+  z-index: 10 !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+@media (min-width: 1024px) {
+  #process div[class*="grid"]>div:not(:last-child)::after {
+    display: block !important;
+  }
+}
+
+/* 21. Mobile Timeline: Distinct Line */
+@media (max-width: 1023px) {
+  #process div[class*="grid"] {
+    border-left: 4px solid #E0F2FE !important;
+    /* Solid thick line */
+  }
+
+  #process div[class*="grid"]>div::after {
+    background: #0EA5E9 !important;
+    /* Blue dot */
+    border: 4px solid #FFFFFF !important;
+    width: 20px !important;
+    height: 20px !important;
+    left: -2.65rem !important;
+  }
+}

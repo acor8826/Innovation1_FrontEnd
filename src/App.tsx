@@ -1,4 +1,5 @@
 import './styles/globals.css';
+import './light-theme-override.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Innovation1Landing from './pages/Innovation1Landing';
 import AgenticAISolutions from './pages/AgenticAISolutions';

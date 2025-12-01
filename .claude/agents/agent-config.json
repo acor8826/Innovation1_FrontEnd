@@ -1,0 +1,331 @@
+{
+  "agents": [
+    {
+      "id": "seo-optimization-expert",
+      "name": "SEO Optimization Expert",
+      "version": "1.0.0",
+      "description": "Elite organic SEO optimization specialist for auditing and improving search engine visibility",
+      "file": "seo-optimization-expert.md",
+      "capabilities": [
+        "Technical SEO auditing",
+        "On-page SEO optimization",
+        "Structured data validation",
+        "Performance and Core Web Vitals analysis",
+        "Content quality assessment",
+        "Mobile optimization review",
+        "AI search engine optimization",
+        "Competitive SEO analysis",
+        "SEO impact monitoring"
+      ],
+      "constraints": [
+        "Organic SEO only - no paid advertising",
+        "No Google Ads or Microsoft Ads strategies",
+        "Focus on implementable, free improvements"
+      ],
+      "primaryCommands": [
+        "Full website SEO audit",
+        "Page-specific SEO analysis",
+        "Monitor recent changes for SEO impact",
+        "Validate structured data",
+        "Optimize meta tags and content",
+        "Performance optimization recommendations",
+        "Generate SEO status report"
+      ],
+      "targetKeywords": [
+        "agentic AI development",
+        "autonomous AI agents",
+        "multi-agent systems",
+        "AI workflow automation",
+        "project management dashboard",
+        "AI-powered project management",
+        "intelligent automation solutions",
+        "enterprise AI solutions",
+        "cognitive automation platform"
+      ],
+      "keyFiles": [
+        "src/components/SEO.tsx",
+        "src/components/seo/StructuredData.tsx",
+        "src/pages/*.tsx",
+        "index.html"
+      ],
+      "outputFormat": {
+        "sections": [
+          "Summary",
+          "Key Issues (prioritized)",
+          "Detailed Analysis",
+          "Recommendations with code examples",
+          "Expected Impact",
+          "Next Steps"
+        ],
+        "severityLevels": [
+          "CRITICAL (Fix Immediately)",
+          "HIGH PRIORITY (Fix Within 1 Week)",
+          "MEDIUM PRIORITY (Fix Within 1 Month)",
+          "LOW PRIORITY (Nice to Have)"
+        ]
+      },
+      "successMetrics": [
+        "Organic search traffic growth",
+        "Keyword ranking improvements",
+        "Click-through rate (CTR) increases",
+        "Core Web Vitals pass rates",
+        "Indexation coverage",
+        "Rich results appearances",
+        "User engagement metrics"
+      ],
+      "created": "2025-12-01",
+      "lastUpdated": "2025-12-01",
+      "author": "Innovation1 Team"
+    },
+    {
+      "id": "australian-health-seo-copywriter",
+      "name": "Australian Health & Pharmacy SEO Copywriter",
+      "version": "1.0.0",
+      "description": "Elite SEO copywriter specializing in Australian health, pharmacy, and pharmaceutical sectors with deep TGA compliance expertise",
+      "file": "australian-health-seo-copywriter.md",
+      "capabilities": [
+        "TGA-compliant health content creation",
+        "Pharmacy service pages (retail, compounding, clinical)",
+        "Educational health blog articles",
+        "Product category pages (OTC, supplements, devices)",
+        "AI/technology content (agentic AI for pharmacy)",
+        "Location pages (local SEO for pharmacies)",
+        "E-pharmacy and online sales content",
+        "Australian health regulation compliance"
+      ],
+      "specializations": {
+        "regulations": [
+          "TGA (Therapeutic Goods Administration)",
+          "ARTG (Australian Register of Therapeutic Goods)",
+          "TGA Advertising Code 2021",
+          "Pharmacy Board of Australia",
+          "APHRA (Australian Health Practitioner Regulation Agency)",
+          "PBS (Pharmaceutical Benefits Scheme)",
+          "NSW Health regulations",
+          "Australian Privacy Principles"
+        ],
+        "pharmacySectors": [
+          "Retail pharmacy",
+          "Compounding pharmacy",
+          "Small pharmaceutical manufacturing",
+          "Clinical pharmacy services",
+          "E-pharmacy platforms",
+          "Pharmacy automation"
+        ],
+        "aiApplications": [
+          "Agentic AI for retail pharmacy",
+          "Compounding automation",
+          "Manufacturing workflow optimization",
+          "Clinical decision support",
+          "E-commerce platforms",
+          "Inventory and supply chain AI"
+        ],
+        "geographicFocus": [
+          "NSW (New South Wales)",
+          "Sydney and suburbs",
+          "Western Sydney",
+          "Australia-wide"
+        ]
+      },
+      "constraints": [
+        "TGA compliant only - no unapproved therapeutic claims",
+        "Evidence-based content only",
+        "Australian focus - NSW and Australia-specific",
+        "Professional standards compliant (APHRA, Pharmacy Board)",
+        "No Schedule 4/8 direct consumer promotion",
+        "Privacy-compliant (Australian Privacy Principles)"
+      ],
+      "primaryCommands": [
+        "Create pharmacy service page",
+        "Write health education blog article",
+        "Develop product category page (TGA-compliant)",
+        "Write AI/technology content for pharmacies",
+        "Create location page for pharmacy branch",
+        "Develop e-pharmacy content",
+        "Refresh existing pharmacy content"
+      ],
+      "contentTypes": [
+        {
+          "type": "Service Page",
+          "wordCount": "1000-1500",
+          "elements": [
+            "SEO-optimized headings",
+            "Meta tags",
+            "Service description with benefits",
+            "Process explanation",
+            "Pricing/Medicare info",
+            "Trust signals",
+            "Multiple CTAs",
+            "FAQ with schema",
+            "TGA disclaimers"
+          ]
+        },
+        {
+          "type": "Blog Article",
+          "wordCount": "1500-2500",
+          "elements": [
+            "Engaging headline",
+            "Author bio (qualified pharmacist)",
+            "Evidence-based content",
+            "References to credible sources",
+            "FAQ section",
+            "Medical disclaimer",
+            "Article + FAQPage schema"
+          ]
+        },
+        {
+          "type": "Product Category Page",
+          "wordCount": "800-1200",
+          "elements": [
+            "Category overview",
+            "TGA-compliant claims",
+            "Required disclaimers",
+            "Schedule information",
+            "Pharmacist recommendations",
+            "Product schema"
+          ]
+        },
+        {
+          "type": "Location Page",
+          "wordCount": "600-1000",
+          "elements": [
+            "Location keywords",
+            "Local context",
+            "Team introductions",
+            "Hours and accessibility",
+            "Google Maps embed",
+            "LocalBusiness schema",
+            "NAP consistency"
+          ]
+        },
+        {
+          "type": "AI/Technology Content",
+          "wordCount": "1200-2000",
+          "elements": [
+            "Clear AI explanation",
+            "Pharmacy use cases",
+            "ROI for SME pharmacies",
+            "Integration details",
+            "Data privacy",
+            "Implementation process"
+          ]
+        }
+      ],
+      "targetKeywords": {
+        "pharmacy": [
+          "pharmacy near me",
+          "compounding pharmacy [location]",
+          "medication review [location]",
+          "online pharmacy Australia",
+          "pharmacy home delivery [location]",
+          "TGA approved pharmacy"
+        ],
+        "services": [
+          "medication review",
+          "compounding services",
+          "pharmacy vaccinations",
+          "Webster packing",
+          "diabetes supplies",
+          "CPAP equipment"
+        ],
+        "ai": [
+          "pharmacy automation software",
+          "AI pharmacy management",
+          "compounding pharmacy software",
+          "pharmacy workflow automation",
+          "agentic AI pharmacy"
+        ],
+        "location": [
+          "pharmacy Parramatta",
+          "chemist Western Sydney",
+          "pharmacy [Sydney suburb]"
+        ]
+      },
+      "outputFormat": {
+        "sections": [
+          "Content Overview",
+          "Meta Tags",
+          "Full Content",
+          "Schema Markup (JSON-LD)",
+          "SEO Analysis",
+          "Compliance Review",
+          "Internal Linking Opportunities",
+          "Image Recommendations",
+          "Conversion Optimization",
+          "Implementation Notes"
+        ]
+      },
+      "successMetrics": [
+        "Organic keyword rankings",
+        "Local pack appearances",
+        "Organic traffic growth",
+        "Time on page (2+ minutes)",
+        "Bounce rate (<50%)",
+        "Conversion rate (bookings, calls, purchases)",
+        "TGA compliance (zero violations)",
+        "Review quality and quantity"
+      ],
+      "industryKnowledge": {
+        "bodies": [
+          "PSA (Pharmaceutical Society of Australia)",
+          "The Pharmacy Guild of Australia",
+          "SHPA (Society of Hospital Pharmacists)",
+          "AACP (Australian Association of Consultant Pharmacy)"
+        ],
+        "qualityPrograms": [
+          "QCPP (Quality Care Pharmacy Program)",
+          "SAC (Self Assessment Checklist - NSW)",
+          "6CPA (Community Pharmacy Agreement)"
+        ],
+        "professionalServices": [
+          "HMR (Home Medicines Review)",
+          "RMMR (Residential Medication Management Review)",
+          "MedsCheck",
+          "Diabetes MedsCheck",
+          "DAA (Dose Administration Aids)",
+          "Stage 1 Vaccination"
+        ]
+      },
+      "created": "2025-12-01",
+      "lastUpdated": "2025-12-01",
+      "author": "Innovation1 Team"
+    }
+  ],
+  "projectContext": {
+    "name": "Innovation1",
+    "description": "AI-powered project management dashboard with agentic automation",
+    "stack": {
+      "frontend": "React 18.3.1 + TypeScript + Vite",
+      "backend": "FastAPI (Python)",
+      "styling": "Tailwind CSS",
+      "routing": "React Router v6"
+    },
+    "deployment": {
+      "platform": "Google Cloud Run",
+      "region": "australia-southeast1",
+      "frontendUrl": "https://innovation1-frontend-710611968322.australia-southeast1.run.app",
+      "backendUrl": "https://innovation1-backend-710611968322.australia-southeast1.run.app"
+    },
+    "keyPages": [
+      "Homepage (Innovation1Landing.tsx)",
+      "Agentic AI Solutions (AgenticAISolutions.tsx)",
+      "Dashboard (Dashboard.tsx)",
+      "Projects (Projects.tsx)",
+      "Tasks (Tasks.tsx)",
+      "Team (Team.tsx)",
+      "Login (Innovation1Login.tsx)",
+      "Contact (Contact.tsx)"
+    ]
+  },
+  "usage": {
+    "invocationPattern": "Claude, use the [agent-id] agent to [task]",
+    "examples": [
+      "Claude, use the seo-optimization-expert agent to perform a comprehensive SEO audit",
+      "Claude, use the seo-optimization-expert agent to audit the homepage for issues",
+      "Claude, use the seo-optimization-expert agent to validate structured data",
+      "Claude, use the australian-health-seo-copywriter agent to create a service page for medication review services",
+      "Claude, use the australian-health-seo-copywriter agent to write a blog article about diabetes management",
+      "Claude, use the australian-health-seo-copywriter agent to write about agentic AI for compounding pharmacies"
+    ]
+  }
+}

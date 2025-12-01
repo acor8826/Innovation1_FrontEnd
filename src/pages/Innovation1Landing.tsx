@@ -8,25 +8,25 @@ import {
   Sparkles,
   ChevronDown,
   Zap,
-  Brain,
-  Network,
-  Cpu,
-  Blocks,
-  GitBranch,
   Rocket,
-  Shield,
+  Pill,
+  FlaskConical,
+  ShieldCheck,
+  ClipboardCheck,
+  Database,
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParticleField } from '../components/innovation1/ParticleField';
-import { AgentCore } from '../components/innovation1/AgentCore';
 import { NeuralGrid } from '../components/innovation1/NeuralGrid';
 import { GlassCard } from '../components/innovation1/GlassCard';
 import { TimelineStep } from '../components/innovation1/TimelineStep';
 import { ShowcaseProject } from '../components/innovation1/ShowcaseProject';
 import { QuantumAtomLazy } from '../components/innovation1/QuantumAtomLazy';
+import { ContactModal } from '../components/innovation1/ContactModal';
 
 function Innovation1Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -40,18 +40,17 @@ function Innovation1Landing() {
   return (
     <div className="min-h-screen bg-[#020817] overflow-x-hidden">
       <SEO
-        title="Innovation1 Web Design & Development | AI-Powered Digital Architecture"
-        description="Building tomorrow's systems today. Expert AI-powered development, agentic automation, and intelligent digital architecture for next-generation software."
-        keywords="AI development, agentic automation, digital architecture, AI systems, automation, Innovation1"
+        title="Innovation1 Pharmacy AI | TGA Compliant Automation & Compounding"
+        description="Next-gen AI for Australian pharmacy. Automate compliance, compounding, and WebsterCare workflows with intelligent agentic architecture."
+        keywords="Pharmacy AI, Compounding Automation, WebsterCare Integration, TGA Compliance, Australian Pharmacy, Agentic AI"
       />
 
       {/* Navigation */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-[#0D1B4C]/95 backdrop-blur-xl shadow-lg border-b border-[#2D9CDB]/20'
-            : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+          ? 'bg-[#0D1B4C]/95 backdrop-blur-xl shadow-lg border-b border-[#2D9CDB]/20'
+          : 'bg-transparent'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="flex items-center justify-between h-16 lg:h-20">
@@ -156,14 +155,14 @@ function Innovation1Landing() {
         <div className="absolute inset-0">
           {/* Deep space gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#0D1B4C] via-[#020817] to-[#0D1B4C]" />
-          
+
           {/* Nebula clouds */}
           <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-[#2D9CDB] rounded-full blur-[200px] opacity-20 animate-pulse" />
           <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-[#C084F5] rounded-full blur-[180px] opacity-20 animate-pulse" style={{ animationDelay: '2s' }} />
-          
+
           {/* Neural grid overlay */}
           <NeuralGrid />
-          
+
           {/* Particle field */}
           <ParticleField />
         </div>
@@ -185,30 +184,30 @@ function Innovation1Landing() {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 backdrop-blur-sm rounded-full border border-[#2D9CDB]/30 mb-6"
               >
-                <Sparkles className="w-4 h-4 text-[#A6E1FF]" />
+                <ShieldCheck className="w-4 h-4 text-[#A6E1FF]" />
                 <span className="text-sm font-medium text-[#A6E1FF]">
-                  Next-Gen AI Architecture
+                  TGA & AHPRA Compliant Architecture
                 </span>
               </motion.div>
 
               {/* Main Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-                <span className="text-[#EEF8FF]">Building Tomorrow's</span>
+                <span className="text-[#EEF8FF]">Nex-Gen Agentic AI for</span>
                 <br />
                 <span className="bg-gradient-to-r from-[#2D9CDB] via-[#A6E1FF] to-[#C084F5] bg-clip-text text-transparent">
-                  Systems Today
+                  Australian Pharmacy
                 </span>
               </h1>
 
               {/* Subheadline */}
               <p className="text-lg sm:text-xl text-[#A6E1FF]/80 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                AI-powered development, agentic automation, and intelligent digital architecture for the next generation of software.
+                Automating compliance, compounding, and WebsterCare workflows with intelligent agentic architecture.
               </p>
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-12">
-                <motion.a
-                  href="#features"
+                <motion.button
+                  onClick={() => setContactModalOpen(true)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="relative group w-full sm:w-auto px-8 py-4 overflow-hidden rounded-xl"
@@ -219,7 +218,7 @@ function Innovation1Landing() {
                     Start a Project
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </span>
-                </motion.a>
+                </motion.button>
 
                 <motion.a
                   href="#showcase"
@@ -240,9 +239,9 @@ function Innovation1Landing() {
                   className="text-center lg:text-left"
                 >
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
-                    50+
+                    100%
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">AI Projects</div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Compliance</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -251,9 +250,9 @@ function Innovation1Landing() {
                   className="text-center lg:text-left"
                 >
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
-                    99.9%
+                    50%
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Uptime</div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Less Admin</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -264,7 +263,7 @@ function Innovation1Landing() {
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
                     24/7
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Support</div>
+                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Monitoring</div>
                 </motion.div>
               </div>
             </motion.div>
@@ -327,27 +326,27 @@ function Innovation1Landing() {
           {/* Features Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             <GlassCard
-              icon={<Brain className="w-8 h-8" />}
-              title="Agentic Automations"
-              description="Autonomous AI agents that learn, adapt, and execute complex workflows without human intervention."
+              icon={<FlaskConical className="w-8 h-8" />}
+              title="Automated Compounding"
+              description="AI-driven formulation checks, batch tracking, and precise weighing validation."
               index={0}
             />
             <GlassCard
-              icon={<Network className="w-8 h-8" />}
-              title="AI Workflow Architecture"
-              description="Design and deploy intelligent systems that orchestrate multi-step processes with precision."
+              icon={<Pill className="w-8 h-8" />}
+              title="WebsterCare Integration"
+              description="Seamless robotic packing integration and medication profile synchronization."
               index={1}
             />
             <GlassCard
-              icon={<Blocks className="w-8 h-8" />}
-              title="Intelligent Document Systems"
-              description="Advanced NLP and understanding for automated document processing and knowledge extraction."
+              icon={<ShieldCheck className="w-8 h-8" />}
+              title="Regulatory Guardrails"
+              description="Real-time AHPRA & TGA compliance monitoring for every transaction."
               index={2}
             />
             <GlassCard
-              icon={<Cpu className="w-8 h-8" />}
-              title="Autonomous Operations"
-              description="Self-managing systems that monitor, optimize, and scale automatically based on real-time data."
+              icon={<Database className="w-8 h-8" />}
+              title="Smart Inventory"
+              description="Predictive stock management for S8/S4 medications and retail products."
               index={3}
             />
           </div>
@@ -358,7 +357,7 @@ function Innovation1Landing() {
       <section id="process" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#020817] to-[#0D1B4C]" />
-        
+
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Section Header */}
           <motion.div
@@ -379,33 +378,33 @@ function Innovation1Landing() {
           {/* Timeline */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-8">
             <TimelineStep
-              number="01"
-              title="Discovery"
-              description="Deep analysis of your business needs and AI opportunities"
-              icon={<Sparkles className="w-8 h-8" />}
+              title="Audit & Discovery"
+              description="Analyzing your pharmacy workflow and regulatory gaps"
+              icon={<ClipboardCheck className="w-8 h-8" />}
               index={0}
+              number="01"
             />
             <TimelineStep
-              number="02"
-              title="System Design"
-              description="Architecting intelligent solutions with scalable foundations"
-              icon={<GitBranch className="w-8 h-8" />}
+              title="Compliance Architecture"
+              description="Designing secure, compliant AI workflows"
+              icon={<ShieldCheck className="w-8 h-8" />}
               index={1}
+              number="02"
             />
             <TimelineStep
-              number="03"
-              title="Agent Training"
-              description="Fine-tuning AI models and autonomous systems for peak performance"
+              title="Integration & Training"
+              description="Connecting with Fred/Z and training staff"
               icon={<Zap className="w-8 h-8" />}
               index={2}
+              number="03"
             />
             <TimelineStep
-              number="04"
-              title="Deployment"
-              description="Seamless integration with continuous monitoring and optimization"
+              title="Validation & Launch"
+              description="Rigorous testing against Australian standards"
               icon={<Rocket className="w-8 h-8" />}
               index={3}
               isLast
+              number="04"
             />
           </div>
         </div>
@@ -439,44 +438,44 @@ function Innovation1Landing() {
           {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             <ShowcaseProject
-              title="Enterprise AI Pipeline"
-              description="Automated data processing system handling 10M+ records daily with 99.8% accuracy."
-              tags={['AI', 'Automation', 'Enterprise']}
+              title="Compounding Lab Automation"
+              description="Reduced batch errors by 100% for a major Sydney compounding pharmacy."
+              tags={['Compounding', 'Automation', 'Safety']}
               gradient="from-[#2D9CDB] to-[#1E88E5]"
               index={0}
             />
             <ShowcaseProject
-              title="Intelligent CRM Agent"
-              description="Autonomous customer engagement system with natural language understanding."
-              tags={['Agents', 'NLP', 'CRM']}
+              title="WebsterCare Robot Sync"
+              description="Unified patient data across dispensing and packing robots."
+              tags={['Robotics', 'Integration', 'WebsterCare']}
               gradient="from-[#C084F5] to-[#9333EA]"
               index={1}
             />
             <ShowcaseProject
-              title="Document Intelligence Hub"
-              description="AI-powered document analysis and workflow automation for legal teams."
-              tags={['AI', 'Documents', 'Legal']}
+              title="Retail Workflow Agent"
+              description="Automated S3 recording and customer counseling logs."
+              tags={['Retail', 'Compliance', 'S3']}
               gradient="from-[#A6E1FF] to-[#2D9CDB]"
               index={2}
             />
             <ShowcaseProject
-              title="Predictive Analytics Engine"
-              description="Real-time forecasting system for supply chain optimization."
-              tags={['Analytics', 'ML', 'Logistics']}
+              title="Telehealth Integration"
+              description="Seamless script-to-dispatch workflow for online pharmacy."
+              tags={['Telehealth', 'Scripts', 'Dispatch']}
               gradient="from-[#1E88E5] to-[#2D9CDB]"
               index={3}
             />
             <ShowcaseProject
-              title="Autonomous Testing Framework"
-              description="Self-learning QA system that adapts to codebase changes automatically."
-              tags={['Automation', 'Testing', 'DevOps']}
-              gradient="from-[#9333EA] to-[#C084F5]"
-              index={4}
+              title="Audit Defence AI Systems"
+              description="Instant report generation for surprise TGA/AHPRA audits."
+              tags={['Audit', 'Reporting', 'TGA']}
+              gradient="from-[#C084F5] to-[#9333EA]"
+              index={1}
             />
             <ShowcaseProject
-              title="Multi-Agent Orchestration"
-              description="Coordinated AI agents managing complex business workflows end-to-end."
-              tags={['Agents', 'Integration', 'Enterprise']}
+              title="Multi-Site Orchestration"
+              description="Centralized management for pharmacy groups."
+              tags={['Enterprise', 'Management', 'Scalability']}
               gradient="from-[#2D9CDB] to-[#A6E1FF]"
               index={5}
             />
@@ -487,7 +486,7 @@ function Innovation1Landing() {
       {/* Footer */}
       <footer className="relative border-t border-[#2D9CDB]/20 py-12 sm:py-16 px-4 sm:px-6 lg:px-12">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B4C] to-[#020817]" />
-        
+
         <div className="relative z-10 max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
@@ -498,7 +497,7 @@ function Innovation1Landing() {
                 <span className="text-lg font-bold text-[#EEF8FF]">Innovation1</span>
               </div>
               <p className="text-sm text-[#A6E1FF]/70">
-                Building tomorrow's intelligent systems today.
+                Building tomorrow's intelligent pharmacy systems today.
               </p>
             </div>
 
@@ -534,6 +533,8 @@ function Innovation1Landing() {
           </div>
         </div>
       </footer>
+
+      <ContactModal isOpen={contactModalOpen} onClose={() => setContactModalOpen(false)} />
     </div>
   );
 }
