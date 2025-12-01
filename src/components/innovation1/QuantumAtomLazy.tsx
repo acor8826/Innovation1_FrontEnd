@@ -1,7 +1,7 @@
 import { lazy, Suspense, memo } from 'react';
 
 const QuantumAtomComponent = lazy(() =>
-  import('./QuantumAtom').then(m => ({ default: m.QuantumAtom }))
+  import('./QuantumAtomOptimized').then(m => ({ default: m.QuantumAtomOptimized }))
 );
 
 // Lightweight fallback

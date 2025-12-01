@@ -16,7 +16,7 @@ export function AgentCore({ delay = 0, size = 'md', position }: AgentCoreProps) 
   return (
     <motion.div
       className={`absolute ${sizeMap[size]} ${position ? '' : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'}`}
-      style={position ? { left: position.x, top: position.y } : {}}
+      style={position ? { left: position.x, top: position.y, willChange: 'transform, opacity' } : { willChange: 'transform, opacity' }}
       initial={{ opacity: 0, scale: 0 }}
       animate={{
         opacity: [0.4, 0.8, 0.4],
@@ -31,19 +31,20 @@ export function AgentCore({ delay = 0, size = 'md', position }: AgentCoreProps) 
       }}
     >
       {/* Outer glow */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#2D9CDB] to-[#C084F5] blur-xl opacity-60" />
-      
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#2D9CDB] to-[#C084F5] blur-xl opacity-60" style={{ willChange: 'transform' }} />
+
       {/* Core sphere */}
       <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#A6E1FF] to-[#2D9CDB] shadow-2xl">
         <div className="absolute inset-0 rounded-full bg-gradient-to-t from-transparent to-white/30" />
       </div>
-      
+
       {/* Inner light */}
       <div className="absolute inset-4 rounded-full bg-white/40 blur-md" />
-      
+
       {/* Pulsing ring */}
       <motion.div
         className="absolute inset-0 rounded-full border-2 border-[#A6E1FF]"
+        style={{ willChange: 'transform, opacity' }}
         animate={{
           scale: [1, 1.3, 1],
           opacity: [0.8, 0, 0.8],
