@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Menu,
   X,
@@ -14,6 +14,8 @@ import {
   ShieldCheck,
   ClipboardCheck,
   Database,
+  Linkedin,
+  Twitter,
 } from 'lucide-react';
 import { SEO } from '../components/SEO';
 import { ParticleField } from '../components/innovation1/ParticleField';
@@ -38,7 +40,7 @@ function Innovation1Landing() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#020817] overflow-x-hidden">
+    <div className="min-h-screen bg-[#020817] overflow-x-hidden selection:bg-[#2D9CDB] selection:text-white">
       <SEO
         title="Innovation1 Pharmacy AI | TGA Compliant Automation & Compounding"
         description="Next-gen AI for Australian pharmacy. Automate compliance, compounding, and WebsterCare workflows with intelligent agentic architecture."
@@ -47,15 +49,16 @@ function Innovation1Landing() {
 
       {/* Navigation */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-          ? 'bg-[#0D1B4C]/95 backdrop-blur-xl shadow-lg border-b border-[#2D9CDB]/20'
-          : 'bg-transparent'
+        aria-label="Global"
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${scrolled
+          ? 'bg-[#0D1B4C]/95 backdrop-blur-xl shadow-lg border-[#2D9CDB]/20'
+          : 'bg-transparent border-white/5'
           }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-2 group cursor-pointer" aria-label="Innovation1 Home">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-[#2D9CDB] to-[#C084F5] blur-md opacity-75 rounded-lg" />
                 <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-[#2D9CDB] to-[#A6E1FF] flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
@@ -83,7 +86,7 @@ function Innovation1Landing() {
               </a>
               <Link
                 to="/login"
-                className="relative group px-6 py-2.5 overflow-hidden rounded-lg"
+                className="relative group px-6 py-2.5 overflow-hidden rounded-lg active:scale-95 transition-transform"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] opacity-100 group-hover:opacity-90 transition-opacity" />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#A6E1FF] to-[#C084F5] opacity-0 group-hover:opacity-100 blur transition-opacity" />
@@ -95,6 +98,8 @@ function Innovation1Landing() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors text-[#A6E1FF]"
+              aria-label="Toggle mobile menu"
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -102,57 +107,61 @@ function Innovation1Landing() {
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-[#0D1B4C]/95 backdrop-blur-xl border-t border-[#2D9CDB]/20"
-          >
-            <div className="px-4 py-6 space-y-4">
-              <a
-                href="#features"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
-              >
-                Features
-              </a>
-              <Link
-                to="/agentic-ai"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
-              >
-                Agentic AI
-              </Link>
-              <a
-                href="#process"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
-              >
-                Process
-              </a>
-              <a
-                href="#showcase"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors"
-              >
-                Showcase
-              </a>
-              <Link
-                to="/login"
-                className="block w-full px-6 py-3 bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] text-white text-center rounded-lg hover:shadow-lg transition-all"
-              >
-                Staff Login
-              </Link>
-            </div>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden bg-[#0D1B4C]/95 backdrop-blur-2xl border-t border-[#2D9CDB]/20 overflow-hidden"
+              role="dialog"
+              aria-modal="true"
+            >
+              <div className="px-4 py-6 space-y-4">
+                <a
+                  href="#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors border-b border-white/5"
+                >
+                  Features
+                </a>
+                <Link
+                  to="/agentic-ai"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors border-b border-white/5"
+                >
+                  Agentic AI
+                </Link>
+                <a
+                  href="#process"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors border-b border-white/5"
+                >
+                  Process
+                </a>
+                <a
+                  href="#showcase"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-3 text-base font-medium text-[#A6E1FF] hover:text-[#EEF8FF] transition-colors border-b border-white/5"
+                >
+                  Showcase
+                </a>
+                <Link
+                  to="/login"
+                  className="block w-full px-6 py-4 mt-4 bg-gradient-to-r from-[#2D9CDB] to-[#C084F5] text-white text-center rounded-xl hover:shadow-lg transition-all font-semibold"
+                >
+                  Staff Login
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Cinematic 3D Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20" role="main">
         {/* Cosmic Background Layers */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none">
           {/* Deep space gradient */}
           <div className="absolute inset-0 bg-gradient-to-br from-[#0D1B4C] via-[#020817] to-[#0D1B4C]" />
 
@@ -168,7 +177,7 @@ function Innovation1Landing() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Column - Text Content */}
             <motion.div
@@ -191,7 +200,7 @@ function Innovation1Landing() {
               </motion.div>
 
               {/* Main Headline */}
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
                 <span className="text-[#EEF8FF]">Nex-Gen Agentic AI for</span>
                 <br />
                 <span className="bg-gradient-to-r from-[#2D9CDB] via-[#A6E1FF] to-[#C084F5] bg-clip-text text-transparent">
@@ -200,7 +209,7 @@ function Innovation1Landing() {
               </h1>
 
               {/* Subheadline */}
-              <p className="text-lg sm:text-xl text-[#A6E1FF]/80 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-[#A6E1FF]/90 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 Automating compliance, compounding, and WebsterCare workflows with intelligent agentic architecture.
               </p>
 
@@ -210,7 +219,8 @@ function Innovation1Landing() {
                   onClick={() => setContactModalOpen(true)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative group w-full sm:w-auto px-8 py-4 overflow-hidden rounded-xl"
+                  className="relative group w-full sm:w-auto px-8 py-4 overflow-hidden rounded-xl hover:shadow-lg hover:shadow-[#2D9CDB]/20 transition-all"
+                  aria-label="Start a Project"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF]" />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#A6E1FF] to-[#C084F5] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -224,14 +234,14 @@ function Innovation1Landing() {
                   href="#showcase"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full sm:w-auto px-8 py-4 bg-white/5 backdrop-blur-sm border border-[#2D9CDB]/30 text-[#EEF8FF] rounded-xl hover:bg-white/10 transition-all font-semibold"
+                  className="w-full sm:w-auto px-8 py-4 bg-white/5 backdrop-blur-sm border border-[#2D9CDB]/30 text-[#EEF8FF] rounded-xl hover:bg-white/10 transition-all font-semibold text-center"
                 >
                   Explore AI Solutions
                 </motion.a>
               </div>
 
               {/* Metrics Row */}
-              <div className="grid grid-cols-3 gap-6 sm:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -241,7 +251,7 @@ function Innovation1Landing() {
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
                     100%
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Compliance</div>
+                  <div className="text-sm text-[#A6E1FF]/70">Compliance</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -252,7 +262,7 @@ function Innovation1Landing() {
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
                     50%
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Less Admin</div>
+                  <div className="text-sm text-[#A6E1FF]/70">Less Admin</div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -263,7 +273,7 @@ function Innovation1Landing() {
                   <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-[#2D9CDB] to-[#A6E1FF] bg-clip-text text-transparent mb-1">
                     24/7
                   </div>
-                  <div className="text-xs sm:text-sm text-[#A6E1FF]/70">Monitoring</div>
+                  <div className="text-sm text-[#A6E1FF]/70">Monitoring</div>
                 </motion.div>
               </div>
             </motion.div>
@@ -273,7 +283,7 @@ function Innovation1Landing() {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 }}
-              className="relative h-[400px] sm:h-[500px] lg:h-[600px]"
+              className="relative h-[300px] sm:h-[500px] lg:h-[600px]"
             >
               <QuantumAtomLazy />
             </motion.div>
@@ -298,7 +308,7 @@ function Innovation1Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
+      <section id="features" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden scroll-mt-20">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#020817] via-[#0D1B4C] to-[#020817]" />
         <div className="absolute inset-0 opacity-10">
@@ -315,7 +325,7 @@ function Innovation1Landing() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4 tracking-tight">
               Intelligent Solutions
             </h2>
             <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
@@ -324,7 +334,7 @@ function Innovation1Landing() {
           </motion.div>
 
           {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <GlassCard
               icon={<FlaskConical className="w-8 h-8" />}
               title="Automated Compounding"
@@ -354,7 +364,7 @@ function Innovation1Landing() {
       </section>
 
       {/* Process Timeline Section */}
-      <section id="process" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
+      <section id="process" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden scroll-mt-20">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#020817] to-[#0D1B4C]" />
 
@@ -367,7 +377,7 @@ function Innovation1Landing() {
             transition={{ duration: 0.6 }}
             className="text-center mb-20"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4 tracking-tight">
               Our Process
             </h2>
             <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
@@ -411,7 +421,7 @@ function Innovation1Landing() {
       </section>
 
       {/* Showcase Section */}
-      <section id="showcase" className="relative py-20 sm:py-32 px-4 sm:px-6 lg:px-12 overflow-hidden">
+      <section id="showcase" className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 overflow-hidden scroll-mt-20">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B4C] via-[#020817] to-[#0D1B4C]" />
         <div className="absolute inset-0 opacity-10">
@@ -427,7 +437,7 @@ function Innovation1Landing() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#EEF8FF] mb-4 tracking-tight">
               Case Studies
             </h2>
             <p className="text-lg text-[#A6E1FF]/80 max-w-2xl mx-auto">
@@ -436,7 +446,7 @@ function Innovation1Landing() {
           </motion.div>
 
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <ShowcaseProject
               title="Compounding Lab Automation"
               description="Reduced batch errors by 100% for a major Sydney compounding pharmacy."
@@ -453,28 +463,14 @@ function Innovation1Landing() {
             />
             <ShowcaseProject
               title="Retail Workflow Agent"
-              description="Automated S3 recording and customer counseling logs."
+              description="Automated S3 recording and customer counselling logs."
               tags={['Retail', 'Compliance', 'S3']}
               gradient="from-[#A6E1FF] to-[#2D9CDB]"
               index={2}
             />
             <ShowcaseProject
               title="Telehealth Integration"
-              description="Seamless script-to-dispatch workflow for online pharmacy."
-              tags={['Telehealth', 'Scripts', 'Dispatch']}
-              gradient="from-[#1E88E5] to-[#2D9CDB]"
-              index={3}
-            />
-            <ShowcaseProject
-              title="Audit Defence AI Systems"
-              description="Instant report generation for surprise TGA/AHPRA audits."
-              tags={['Audit', 'Reporting', 'TGA']}
-              gradient="from-[#C084F5] to-[#9333EA]"
-              index={1}
-            />
-            <ShowcaseProject
-              title="Multi-Site Orchestration"
-              description="Centralized management for pharmacy groups."
+              description="Centralised management for pharmacy groups."
               tags={['Enterprise', 'Management', 'Scalability']}
               gradient="from-[#2D9CDB] to-[#A6E1FF]"
               index={5}
@@ -484,7 +480,7 @@ function Innovation1Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="relative border-t border-[#2D9CDB]/20 py-12 sm:py-16 px-4 sm:px-6 lg:px-12">
+      <footer className="relative border-t border-[#2D9CDB]/20 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0D1B4C] to-[#020817]" />
 
         <div className="relative z-10 max-w-7xl mx-auto">
@@ -496,34 +492,44 @@ function Innovation1Landing() {
                 </div>
                 <span className="text-lg font-bold text-[#EEF8FF]">Innovation1</span>
               </div>
-              <p className="text-sm text-[#A6E1FF]/70">
+              <p className="text-sm text-[#A6E1FF]/70 mb-6">
                 Building tomorrow's intelligent pharmacy systems today.
               </p>
+              <div className="flex gap-4">
+                <a href="#" className="text-[#A6E1FF]/70 hover:text-white transition-colors" aria-label="Twitter">
+                  <Twitter className="w-5 h-5" />
+                </a>
+                <a href="#" className="text-[#A6E1FF]/70 hover:text-white transition-colors" aria-label="LinkedIn">
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              </div>
             </div>
 
             <div>
               <h3 className="font-semibold text-[#EEF8FF] mb-4">Solutions</h3>
               <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
-                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Agentic AI</a></li>
-                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Automation</a></li>
-                <li><a href="#features" className="hover:text-[#A6E1FF] transition-colors">Architecture</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Agentic AI</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Automation</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Architecture</a></li>
               </ul>
             </div>
 
             <div>
               <h3 className="font-semibold text-[#EEF8FF] mb-4">Company</h3>
               <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
-                <li><a href="#process" className="hover:text-[#A6E1FF] transition-colors">Process</a></li>
-                <li><a href="#showcase" className="hover:text-[#A6E1FF] transition-colors">Case Studies</a></li>
-                <li><Link to="/login" className="hover:text-[#A6E1FF] transition-colors">Staff Portal</Link></li>
+                <li><a href="#process" className="hover:text-white transition-colors">Process</a></li>
+                <li><a href="#showcase" className="hover:text-white transition-colors">Case Studies</a></li>
+                <li><Link to="/login" className="hover:text-white transition-colors">Staff Portal</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="font-semibold text-[#EEF8FF] mb-4">Connect</h3>
               <ul className="space-y-2 text-sm text-[#A6E1FF]/70">
-                <li><a href="mailto:info@innovation1.com" className="hover:text-[#A6E1FF] transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-[#A6E1FF] transition-colors">Support</a></li>
+                <li><a href="mailto:info@innovation1.com" className="hover:text-white transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
               </ul>
             </div>
           </div>

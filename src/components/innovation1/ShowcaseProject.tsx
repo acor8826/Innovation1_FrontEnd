@@ -21,21 +21,21 @@ export function ShowcaseProject({ title, description, tags, gradient, index }: S
       {/* Card */}
       <div className="bg-white border-2 border-sky-200 rounded-2xl overflow-hidden hover:border-sky-300 hover:shadow-2xl hover:shadow-sky-100/50 transition-all duration-300 h-full flex flex-col">
         {/* Gradient Header */}
-        <div className={`h-48 bg-gradient-to-br ${gradient} p-8 flex items-center justify-center relative overflow-hidden`}>
+        <div className={`h-48 bg-gradient-to-br ${gradient} p-4 sm:p-6 flex items-center justify-center relative overflow-hidden`}>
           {/* Decorative circles */}
           <div className="absolute top-4 right-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
           <div className="absolute bottom-4 left-4 w-16 h-16 bg-white/10 rounded-full blur-lg"></div>
 
           {/* Title on gradient */}
-          <h3 className="text-2xl font-bold text-white text-center relative z-10">
+          <h3 className="text-lg sm:text-2xl font-bold text-white text-center relative z-10 break-words max-w-full px-2">
             {title}
           </h3>
         </div>
 
         {/* Content */}
-        <div className="p-6 flex-1 flex flex-col">
+        <div className="p-6 flex-1 flex flex-col min-w-0">
           {/* Description */}
-          <p className="text-slate-600 leading-relaxed mb-6 flex-1">
+          <p className="text-slate-600 leading-relaxed mb-6 flex-1 break-words overflow-hidden">
             {description}
           </p>
 
